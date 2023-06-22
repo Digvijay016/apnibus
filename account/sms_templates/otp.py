@@ -1,0 +1,1 @@
+COMMUTER_LOGIN_OTP_MESSAGE = "Namaskar! Aapki ApniBus app ka OTP hai - {} Ye OTP kisi ke saath share na karen -ApniBus wGhp1ni7jl5"
