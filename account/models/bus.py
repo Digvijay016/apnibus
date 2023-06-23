@@ -95,8 +95,10 @@ class Bus(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     number = models.CharField(max_length=255, unique=True)
-    operator = models.ForeignKey(Operator, on_delete=models.CASCADE, related_name='related_bus', null=True)
-    category = models.CharField(max_length=255, choices=BUS_CATEGORY, default=GENERAL)
+    operator = models.ForeignKey(
+        Operator, on_delete=models.CASCADE, related_name='related_bus', null=True)
+    category = models.CharField(
+        max_length=255, choices=BUS_CATEGORY, default=GENERAL)
     brand = models.CharField(max_length=255, null=True)
     has_wifi = models.BooleanField(default=False)
     has_power_plug = models.BooleanField(default=False)
@@ -108,7 +110,8 @@ class Bus(TimeStampedModel):
     conductor_name = models.CharField(max_length=255, null=True, blank=True)
     conductor_contact = models.CharField(max_length=20, null=True, blank=True)
     seat_type = models.CharField(max_length=50, choices=SEAT_TYPE)
-    layout_type = models.CharField(max_length=255, choices=LAYOUT_TYPES, default=LAYOUT_1)
+    layout_type = models.CharField(
+        max_length=255, choices=LAYOUT_TYPES, default=LAYOUT_1)
     is_multi_axle = models.BooleanField(default=False)
     normal_seats_capacity = models.PositiveIntegerField(default=0)
     single_sleeper_capacity = models.PositiveIntegerField(default=0)
@@ -116,8 +119,10 @@ class Bus(TimeStampedModel):
     upper_single_sleeper_capacity = models.PositiveIntegerField(default=0)
     upper_sharing_sleeper_capacity = models.PositiveIntegerField(default=0)
     recliner_capacity = models.PositiveIntegerField(default=0)
-    status = models.CharField(max_length=255, choices=BUS_STATUS, default=ONBOARDED)
-    gps_status = models.CharField(max_length=255, choices=GPS_STATUS, default=NOT_INSTALLED)
+    status = models.CharField(
+        max_length=255, choices=BUS_STATUS, default=ONBOARDED)
+    gps_status = models.CharField(
+        max_length=255, choices=GPS_STATUS, default=NOT_INSTALLED)
     # deprecated
     commission = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     digital_commission = models.IntegerField(validators=COMMISSION_VALIDATOR)
@@ -130,15 +135,18 @@ class Bus(TimeStampedModel):
     print_bus_number = models.BooleanField(default=True)
     access_password = models.CharField(max_length=255, null=True, blank=True)
     ticket_header = models.CharField(max_length=255, null=True, blank=True)
-    ticket_footer = models.CharField(max_length=255, default="ApniBus वॉलेट में ₹250 तक जीतें, नीचे दिए नंबर पर कॉल करें")
+    ticket_footer = models.CharField(
+        max_length=255, default="ApniBus वॉलेट में ₹250 तक जीतें, नीचे दिए नंबर पर कॉल करें")
     subscription_pending = models.BooleanField(default=False)
     apply_concession = models.BooleanField(default=True)
     apply_bus_discount = models.BooleanField(default=False)
     apply_qr_discount = models.BooleanField(default=False)
     show_passenger_in_poc = models.BooleanField(default=True)
 
-    online_app_booking_commission = models.CharField(max_length=255, choices=ONLINE_APP_BOOKING_COMMISSION, null=True, default=PERCENTAGE)
-    qr_booking_commission = models.CharField(max_length=255, choices=QR_BOOKING_COMMISSION, null=True, default=FULL_AMOUNT)
+    online_app_booking_commission = models.CharField(
+        max_length=255, choices=ONLINE_APP_BOOKING_COMMISSION, null=True, default=PERCENTAGE)
+    qr_booking_commission = models.CharField(
+        max_length=255, choices=QR_BOOKING_COMMISSION, null=True, default=FULL_AMOUNT)
 
     history = HistoricalRecords()
     is_ticket_amount_editable = models.BooleanField(default=False)
@@ -146,6 +154,9 @@ class Bus(TimeStampedModel):
 
     def __str__(self):
         return self.number
+
+    def __str__(self):
+        return self.id
 
 
 class BusPhotograph(TimeStampedModel):
@@ -164,3 +175,5 @@ class BusPhotograph(TimeStampedModel):
     type = models.CharField(max_length=255, choices=PHOTOGRAPH_TYPE)
     history = HistoricalRecords()
 
+    def __str__(self):
+        return self.bus_photograph_id

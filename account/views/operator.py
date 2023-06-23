@@ -16,6 +16,9 @@ from utils.apnibus_logger import apnibus_logger
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from utils.sms_service import MSG91_TEMPLATE_IDS, MSG91Service
+# from django.contrib.auth import get_user_model
+
+# User = get_user_model()
 
 
 class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
@@ -44,7 +47,8 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
             # Sending otp through msg91
             template_id = MSG91_TEMPLATE_IDS['SEND_OTP']
             variable_list = [otp, ""]
-            msg_sent = MSG91Service(mobile, template_id, variable_list).send_sms()
+            msg_sent = MSG91Service(
+                mobile, template_id, variable_list).send_sms()
 
             if not msg_sent:
                 send_otp(user_obj, mobile, otp)
@@ -73,7 +77,8 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
             operator_obj = Operator.objects.filter(contact=mobile).first()
             user = operator_obj.user
             if not user:
-                user = User.objects.create(username=uuid.uuid1(), user_type=User.COMMUTER)
+                user = User.objects.create(
+                    username=uuid.uuid1(), user_type=User.COMMUTER)
                 operator_obj.user = user
                 operator_obj.save()
             token_obj, is_created = Token.objects.get_or_create(user=user)
@@ -95,12 +100,10 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
 
 class CreateOperatorView(generics.CreateAPIView):
     serializer_class = OperatorSerializer
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
-    # @action(methods=['post'], detail=False)
     def create(self, request, *args, **kwargs):
-        # OperatorUserAuthOTPViewset.create(self, request, *args, **kwargs)
         mobile = request.data.get('mobile')
         operator_exists = Operator.objects.filter(mobile=mobile).exists()
 
@@ -111,17 +114,25 @@ class CreateOperatorView(generics.CreateAPIView):
         if operator_exists:
             return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.',
                                  ui_message='Operator already exists with this mobile')
-        user = User.objects.create(username=uuid.uuid1(), user_type=User.OPERATOR)
-        
-        # token = Token.objects.create(user=user)
+        uuid_value = uuid.uuid4()
+        user = User.objects.create_user(
+            username=uuid_value, user_type=User.OPERATOR)
+        # user.save()
+
+        print("######### 1 ##########", user)
+
+        token = Token.objects.create(user=user)
+        # token.save()
+
+        print('Token generated ---------- ', token)
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.save(user=user)
             data = self.get_serializer(instance).data
             return send_response(status=status.HTTP_200_OK, developer_message='Request was successful.',
-                                     data=data)
-        return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.',ui_message='Invalid data', error=serializer.errors)
+                                 data=data)
+        return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.', ui_message='Invalid data', error=serializer.errors)
 
 
 class OperatorListView(generics.ListAPIView):
@@ -156,14 +167,15 @@ class OperatorListView(generics.ListAPIView):
 class OperatorUpdateView(generics.UpdateAPIView):
     queryset = Operator.objects.all()
     serializer_class = OperatorSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
     lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         apnibus_logger.info(request.data)
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
         if serializer.is_valid():
             with transaction.atomic():
                 operator_email = request.data.get('email', None)
@@ -236,7 +248,7 @@ class OperatorSearchView(generics.ListAPIView):
         name = request.GET.get('name', None)
         owner = request.GET.get('owner', None)
         mobile = request.GET.get('mobile', None)
-        print('Search name ---- ',name)
+        print('Search name ---- ', name)
         print('Search owner ---- ', owner)
         print('Search mobile ---- ', mobile)
         # searchParam = self.kwargs['name']
@@ -245,15 +257,17 @@ class OperatorSearchView(generics.ListAPIView):
         # print('Kwargs value ---- ', searchParam)
         # instance = self.get_object()
         # print('Instance ---- ', instance)
-        print('Request ---- ',request)
+        print('Request ---- ', request)
         if mobile:
-            queryset = queryset.filter(mobile__icontains=mobile).order_by('mobile')
+            queryset = queryset.filter(
+                mobile__icontains=mobile).order_by('mobile')
 
         if name:
             queryset = queryset.filter(name__icontains=name).order_by('name')
 
         if owner:
-            queryset = queryset.filter(owner__icontains=owner).order_by('owner')
+            queryset = queryset.filter(
+                owner__icontains=owner).order_by('owner')
 
         fields = ('id', 'name', 'mobile', 'owner', 'bus_count')
         data = self.get_serializer(queryset, many=True, fields=fields).data

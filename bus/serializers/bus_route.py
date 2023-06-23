@@ -7,11 +7,12 @@ from .bus import BusSerializer
 
 class BusRouteSerializer(DynamicFieldsModelSerializer):
     # route = RouteSerializer(required=False)
-    # bus = BusSerializer(required=False, fields=('id', 'bus_number', 'pos_serial_no', 'pos_dsn_number', 'gps_sim_image'))
+    # bus = BusSerializer(required=False)
 
     class Meta:
         model = BusRoute
-        fields = ('id','bus_number', 'from_town', 'to_town', 'departure_time', 'arrival_time')
+        fields = ('id', 'bus', 'route', 'from_town', 'to_town',
+                  'start_time', 'arrival_time')
 
     # def get_remarks(self, obj):
     #     qs = OperatorRemark.objects.filter(bus_route=obj)

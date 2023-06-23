@@ -37,9 +37,16 @@ class User(AbstractUser, TimeStampedModel):
         (HINDI, 'hindi'),
     )
 
+    class Meta:
+        app_label = 'account'
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user_type = models.CharField(max_length=25, choices=USER_TYPE)
     # email = models.EmailField(unique=True, default='abc@gmail.com')
-    preferred_language = models.CharField(max_length=255, choices=PREFERRED_LANGUAGES, default=ENGLISH)
+    preferred_language = models.CharField(
+        max_length=255, choices=PREFERRED_LANGUAGES, default=ENGLISH)
     is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
+
+    def __str__(self):
+        return str(self.username)

@@ -1,14 +1,14 @@
 from rest_framework import generics, status
 from bus.models.bus import Bus
 from bus.models.bus_route import BusRoute
-from bus.models.bus_route_journey import BusRouteJourney
+# from bus.models.bus_route_journey import BusRouteJourney
 from bus.serializers.bus import BusSerializer
 from account.models.operators import Operator
 from utils.restful_response import send_response
 from bus.pagination import AdminBusListPagination, BusListPagination
 from utils.exception_handler import get_object_or_json404
-# from rest_framework.authentication import TokenAuthentication
-# from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 # from bus.helpers.ticket_header import update_ticket_header
 # from operators.helpers.remarks import add_remarks
 
@@ -31,8 +31,8 @@ class CreateBusView(generics.CreateAPIView):
         # operator_instance = Operator.objects.filter(id=operator_id).first()
 
         serializer = self.get_serializer(data=request.data)
-        print("1",request.data)
-        print("2",serializer.is_valid())
+        print("1", request.data)
+        print("2", serializer.is_valid())
         if serializer.is_valid():
             instance = serializer.save()
 
@@ -72,7 +72,8 @@ class BusListView(generics.ListAPIView):
         queryset = Bus.objects.all()
         bus_id = request.GET.get('bus_id', None)
         company_name = request.GET.get('company_name', None)
-        operator_mobile_number = request.GET.get('operator_mobile_number', None)
+        operator_mobile_number = request.GET.get(
+            'operator_mobile_number', None)
         if bus_id:
             queryset = queryset.filter(id=bus_id)
 
@@ -125,11 +126,13 @@ class BusUpdateView(generics.UpdateAPIView):
         instance = self.get_object()
         operator_id = request.data.get('operator_id', None)
 
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
 
         if serializer.is_valid():
             if operator_id:
-                operator = get_object_or_json404(Operator.objects.all(), id=operator_id)
+                operator = get_object_or_json404(
+                    Operator.objects.all(), id=operator_id)
                 instance = serializer.save(operator=operator)
             instance = serializer.save()
 
@@ -176,7 +179,7 @@ class DeleteBusView(generics.DestroyAPIView):
         bus_number = request.GET.get('bus_number')
         bus_obj = Bus.objects.filter(number=bus_number).first()
         bus_routes = BusRoute.objects.filter(bus=bus_obj)
-        bus_route_journeys = BusRouteJourney.objects.filter(bus_route__in=bus_routes)
+        # bus_route_journeys = BusRouteJourney.objects.filter(bus_route__in=bus_routes)
         # bus_route_towns = BusRouteTown.objects.filter(bus_route__in=bus_routes)
         # bus_route_town_stoppages = BusRouteTownStoppage.objects.filter(bus_route_town__in=bus_route_towns)
         # bus_route_town_stoppage_journeys = BusRouteTownStoppageJourney.objects.filter(bus_route_journey__in=bus_route_journeys)
@@ -192,7 +195,7 @@ class DeleteBusView(generics.DestroyAPIView):
         # bus_route_town_stoppage_journeys.delete()
         # bus_route_town_stoppages.delete()
         # bus_route_towns.delete()
-        bus_route_journeys.delete()
+        # bus_route_journeys.delete()
         bus_routes.delete()
         bus_obj.delete()
 

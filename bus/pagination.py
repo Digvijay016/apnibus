@@ -14,3 +14,7 @@ class AdminBusListPagination(pagination.PageNumberPagination):
 class OperatorTripPagination(pagination.PageNumberPagination):
     page_size = 30
     page_size_query_param = 'page_size'
+
+class LocationListPagination(pagination.PageNumberPagination):
+    page_size = 30
+    page_size_query_param = 'page_size'

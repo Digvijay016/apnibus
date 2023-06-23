@@ -33,6 +33,7 @@ OP_FIREBASE_KEY = "AAAAd9kAAIA:APA91bFFN6gr5iLos938YLk1KkWscQn2DPnBkyP-kwaeIoB-Y
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'account',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -40,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'account',
     'simple_history',
+    # 'account',
     'bus',
     'route',
 ]
@@ -130,11 +131,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'account.User'
 
 # REST_FRAMEWORK = {
 #     "EXCEPTION_HANDLER": "utils.exception_handler.custom_exception_handler",
 #     "UNAUTHENTICATED_USER": None,
+# }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',
+#     ),
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework.authentication.TokenAuthentication',
+#     )
 # }
 
 # Environment

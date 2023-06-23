@@ -64,8 +64,8 @@ class UpdateBusRouteView(generics.UpdateAPIView):
 
     serializer_class = BusRouteSerializer
     queryset = BusRoute.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
     lookup_url_kwarg = 'id'
     lookup_field = 'id'
 
@@ -73,17 +73,20 @@ class UpdateBusRouteView(generics.UpdateAPIView):
         route = self.get_object()
         start_time = request.data.get('start_time', None)
 
-        serializer = self.get_serializer(route, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            route, data=request.data, partial=True)
         if serializer.is_valid():
             instance = serializer.save()
 
             # Update start time in upcoming journeys
             if start_time:
-                update_bus_via_route_journey_start_time.delay(instance.id, instance.start_time)
+                update_bus_via_route_journey_start_time.delay(
+                    instance.id, instance.start_time)
 
             remarks = request.data.get('remarks', None)
             if remarks:
-                add_remarks(remarks, request.user.id, "BUS_ROUTE", bus_route_id=instance.id)
+                add_remarks(remarks, request.user.id,
+                            "BUS_ROUTE", bus_route_id=instance.id)
 
             return send_response(status=status.HTTP_200_OK, developer_message='Request was successful.',
                                  data=serializer.data)
@@ -160,8 +163,8 @@ class DeleteBusRouteView(generics.DestroyAPIView):
     working: Used to delete a particular bus_route using bus_route_id.
     """
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def delete(self, request, *args, **kwargs):
 

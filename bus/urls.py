@@ -4,6 +4,8 @@ from django.urls import path
 # from bus.views.bus_via_route_pricing import AutoFillBusViaRoutePricing
 from bus.views.bus import BusListView, CreateBusView
 from bus.views.bus_route import BusRouteListView, CreateBusRouteView
+from bus.views.bus_route_town import BusRouteTownListView, CreateBusRouteTownView, UpdateBusRouteTownView
+from bus.views.bus_route_town_stoppage import BusRouteTownStoppageListView, BusUpdateRouteTownStoppageView, CreateBusRouteTownStoppageView
 # CreateBusRouteView, BusRouteListView,
 # \
 # CreateBusRouteTownView, BusRouteTownListView, CreateBusRouteTownStoppageView, BusRouteTownStoppageListView, \
@@ -26,4 +28,16 @@ urlpatterns = [
     path('bus_route_create', CreateBusRouteView.as_view(),
          name='bus_route_create_view'),
     path('bus_route_list', BusRouteListView.as_view(), name='bus_route_list_view'),
+    path('bus_route_town_create', CreateBusRouteTownView.as_view(),
+         name='bus_route_town_create'),
+    path('bus_route_town_list', BusRouteTownListView.as_view(),
+         name='bus_route_town_list'),
+    path('bus_route_town_update/<str:id>',
+         UpdateBusRouteTownView.as_view(), name='bus_route_town_update'),
+    path('bus_route_town_stoppage_create/', CreateBusRouteTownStoppageView.as_view(),
+         name='bus_route_town_stoppage_create'),
+    path('bus_route_town_stoppage_update/<str:id>', BusUpdateRouteTownStoppageView.as_view(),
+         name='bus_route_town_stoppage_update'),
+    path('bus_route_town_stoppage_list', BusRouteTownStoppageListView.as_view(),
+         name='bus_route_town_stoppage_list'),
 ]

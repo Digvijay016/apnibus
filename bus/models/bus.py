@@ -7,91 +7,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Bus(TimeStampedModel):
-    # SEATER = 'seater'
-    # SLEEPER = 'sleeper'
-    # SEATER_SLEEPER = 'seater_sleeper'
-    # UPPER_SINGLE_SLEEPER = 'upper_single_sleeper'
-    # UPPER_SHARING_SLEEPER = 'upper_sharing_sleeper'
-    # RECLINER = 'recliner'
-    #
-    # SEAT_TYPE = (
-    #     (SEATER, 'seater'),
-    #     (SLEEPER, 'sleeper'),
-    #     (SEATER_SLEEPER, 'seater_sleeper'),
-    #     (UPPER_SINGLE_SLEEPER, 'upper_single_sleeper'),
-    #     (UPPER_SHARING_SLEEPER, 'upper_sharing_sleeper'),
-    #     (RECLINER, 'recliner')
-    # )
-    #
-    # LAYOUT_1 = '2+1'
-    # LAYOUT_2 = '2+2'
-    # LAYOUT_3 = '1+2'
-    # LAYOUT_4 = '2+3'
-    # LAYOUT_5 = '3+3'
-    #
-    # LAYOUT_TYPES = (
-    #     (LAYOUT_1, '2+1'),
-    #     (LAYOUT_2, '2+2'),
-    #     (LAYOUT_3, '1+2'),
-    #     (LAYOUT_4, '2+3'),
-    #     (LAYOUT_5, '3+3')
-    # )
-    #
-    # GENERAL = "general"
-    # EXPRESS = "express"
-    # LUXURY = "luxury"
-    #
-    # BUS_CATEGORY = (
-    #     (GENERAL, "general"),
-    #     (EXPRESS, "express"),
-    #     (LUXURY, "luxury"),
-    # )
-    #
-    # ONBOARDED = 'onboarded'
-    # ACTIVE = 'active'
-    # INACTIVE = 'inactive'
-    #
-    # BUS_STATUS = (
-    #     (ONBOARDED, 'onboarded'),
-    #     (ACTIVE, 'active'),
-    #     (INACTIVE, 'inactive'),
-    # )
-    #
-    # IN_PROGRESS = 'in_progress'
-    # INSTALLED = 'installed'
-    # NOT_INSTALLED = 'not_installed'
-    # FAULTY = 'faulty'
-    # LIVE = 'live'
-    #
-    # GPS_STATUS = (
-    #     (IN_PROGRESS, 'in_progress'),
-    #     (INSTALLED, 'installed'),
-    #     (NOT_INSTALLED, 'not_installed'),
-    #     (FAULTY, 'faulty'),
-    #     (LIVE, 'live')
-    # )
-    #
-    # COMMISSION_VALIDATOR = [
-    #     MaxValueValidator(30),
-    #     MinValueValidator(0)
-    # ]
-    #
-    # PERCENTAGE = 'percentage'
-    # FIXED = 'fixed'
-    # BOOKING_OFF = 'booking_off'
-    #
-    # ONLINE_APP_BOOKING_COMMISSION = (
-    #     (PERCENTAGE, 'percentage'),
-    #     (FIXED, 'fixed'),
-    #     (BOOKING_OFF, 'booking_off'),
-    # )
-    #
-    # FULL_AMOUNT = 'full_amount'
-    #
-    # QR_BOOKING_COMMISSION = (
-    #     (FULL_AMOUNT, 'full_amount'),
-    #     (BOOKING_OFF, 'booking_off')
-    # )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     bus_number = models.CharField(max_length=255, unique=True)
@@ -119,3 +34,5 @@ class BusPhotograph(TimeStampedModel):
     type = models.CharField(max_length=255, choices=PHOTOGRAPH_TYPE)
     history = HistoricalRecords()
 
+    def __str__(self):
+        return self.id
