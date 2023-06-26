@@ -21,8 +21,7 @@ class BusRoute(TimeStampedModel):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
-    # bus_number = models.CharField(
-    #     max_length=255, unique=True, default='APNI_BUS')
+    # bus_number = models.CharField(max_length=255, unique=True, default='APNI_BUS')
     from_town = models.CharField(max_length=255, default='from town')
     to_town = models.CharField(max_length=255, default='to town')
     start_time = models.TimeField(default='00:00:00')

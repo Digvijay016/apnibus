@@ -31,8 +31,8 @@ class CreateBusView(generics.CreateAPIView):
         # operator_instance = Operator.objects.filter(id=operator_id).first()
 
         serializer = self.get_serializer(data=request.data)
-        print("1", request.data)
-        print("2", serializer.is_valid())
+        # print("1", request.data)
+        # print("2", serializer.is_valid())
         if serializer.is_valid():
             instance = serializer.save()
 

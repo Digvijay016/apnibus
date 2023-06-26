@@ -5,6 +5,19 @@ from account.models.user import User
 from simple_history.models import HistoricalRecords
 
 from utils.models import TimeStampedModel
+from utils.aws_s3 import UploadFiles
+
+
+# def s3_upload_path(instance, filename):
+#     # Return the desired storage path in Amazon S3
+#     # You can use the instance and filename to generate a unique path
+#     # Example: 'path/to/s3/directory/filename.jpg'
+#     # print(instance,"  ",filename)
+#     # s3_url = instance.myfile.url
+#     # # Remove the local development server URL prefix
+#     # s3_url = s3_url.replace('http://localhost:8000/', '')
+#     # print(s3_url)
+#     return 'https://apnibus-bd-assets.s3.ap-south-1.amazonaws.com/bd_images/img/{}'.format(filename)
 
 
 class Operator(TimeStampedModel):
@@ -19,6 +32,12 @@ class Operator(TimeStampedModel):
         (LOCKED, 'locked'),
     )
 
+    # def s3_file_link(self,file_name):
+    #     folder_name = settings.AWS_IMG_FOLDER
+    #     file_link = UploadFiles.get_file_link(self,
+    #         file_name=file_name, folder_name=folder_name)
+    #     return file_link
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='operator_user')
@@ -31,12 +50,10 @@ class Operator(TimeStampedModel):
     town = models.CharField(max_length=255, null=True, default="")
     gstin = models.CharField(max_length=20, null=True, blank=True)
     pan_number = models.CharField(max_length=20, null=True, blank=True)
-    pan_photo = models.FileField(upload_to='operator/', null=True, blank=True)
+    pan_photo = models.CharField(max_length=255,null=True, blank=True)
     aadhar_number = models.CharField(max_length=20, null=True, blank=True)
-    aadhar_front_photo = models.FileField(
-        upload_to='operator/', null=True, blank=True)
-    aadhar_back_photo = models.FileField(
-        upload_to='operator/', null=True, blank=True)
+    aadhar_front_photo = models.CharField(max_length=255,null=True, blank=True)
+    aadhar_back_photo = models.CharField(max_length=255,null=True, blank=True)
     poc_name = models.CharField(max_length=20, null=True, blank=True)
     poc_number = models.CharField(max_length=20, null=True, blank=True)
     setup_fee = models.IntegerField(null=True, blank=True)

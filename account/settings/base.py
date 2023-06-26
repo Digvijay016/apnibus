@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # 'account',
     'bus',
     'route',
+    'pricing',
 ]
 
 MIDDLEWARE = [
@@ -179,9 +180,12 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_CREATE_MISSING_QUEUES = True
 
 # AWS Credentials
-AWS_BUCKET_NAME = "apnibus-assets"
-AWS_IMG_FOLDER = "push_notification_assets/imgs"
+AWS_BUCKET_NAME = "apnibus-bd-assets"
+AWS_IMG_FOLDER = "bd_images/img"
+AWS_ACCESS_KEY = "AKIATYP7GS4Z5FKJ4OV6"
+AWS_SECRET_KEY = "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"
 BUCKET_REGION_NAME = os.getenv("BUCKET_REGION_NAME", "ap-south-1")
+# BUCKET_REGION_NAME = "ap-south-1"
 #
 # LOGGING = {
 #     'version': 1,

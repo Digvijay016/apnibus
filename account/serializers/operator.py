@@ -10,6 +10,7 @@ class OperatorSerializer(DynamicFieldsModelSerializer):
     email = serializers.SerializerMethodField(read_only=True)
     # onboarded_bus_count = serializers.SerializerMethodField(read_only=True)
     # remarks = serializers.SerializerMethodField(read_only=True)
+    # img = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Operator

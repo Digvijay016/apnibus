@@ -36,7 +36,8 @@ class CustomRouter(SimpleRouter):
         ),
         Route(
             url=r"^{prefix}/{lookup}/$",
-            mapping={"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"},
+            mapping={"get": "retrieve", "put": "update",
+                     "patch": "partial_update", "delete": "destroy"},
             name="{basename}-retrieve-update",
             detail=True,
             initkwargs={"suffix": "Retrieve/Update"},
@@ -63,5 +64,6 @@ router = CustomRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('operator/', include('account.urls')),
-    path('bus/', include('bus.urls'))
+    path('bus/', include('bus.urls')),
+    path('pricing/', include('pricing.urls'))
 ]

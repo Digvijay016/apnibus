@@ -1,3 +1,5 @@
+from ast import operator
+from distutils.command.upload import upload
 import uuid
 from django.db import transaction
 from rest_framework import viewsets, status, generics
@@ -7,6 +9,8 @@ from account.helpers.otp import send_otp
 from account.helpers.otp_service import OTPService
 from account.serializers.commuter import UserOTPGenerationSerializer
 from account.models.operators import Operator
+from account.views.aws_s3 import UploadAssetsToS3View
+from utils.aws_s3 import UploadFiles
 from utils.restful_response import send_response
 from account.models.user_authentication import UserAuthenticationOTP
 from account.models.user import User
@@ -16,6 +20,7 @@ from utils.apnibus_logger import apnibus_logger
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from utils.sms_service import MSG91_TEMPLATE_IDS, MSG91Service
+from django.conf import settings
 # from django.contrib.auth import get_user_model
 
 # User = get_user_model()
@@ -78,7 +83,7 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
             user = operator_obj.user
             if not user:
                 user = User.objects.create(
-                    username=uuid.uuid1(), user_type=User.COMMUTER)
+                    username=uuid.uuid1(), user_type=User.OPERATOR)
                 operator_obj.user = user
                 operator_obj.save()
             token_obj, is_created = Token.objects.get_or_create(user=user)
@@ -110,6 +115,36 @@ class CreateOperatorView(generics.CreateAPIView):
         # email = request.data.pop('email', None)
         # print('Email ------ ',request.data)
         # bank_accounts = request.data.pop('bank_accounts', [])
+        # print("$$$$$$$$$$$ ",request.FILES.get('pan_photo'))
+        # pan_img = request.FILES.get('pan_photo')
+        adhar_front_img = request.data.get('aadhar_front_photo')
+        adhar_back_img = request.data.get('aadhar_back_photo')
+        pan_img = request.data.get('pan_photo')
+        adhar_front_link, _ = UploadAssetsToS3View.create(
+            self, adhar_front_img, mobile)
+        adhar_back_link, _ = UploadAssetsToS3View.create(self, adhar_back_img,mobile)
+        pan_link, _ = UploadAssetsToS3View.create(self, pan_img,mobile)
+
+        request.data['aadhar_front_photo'] = str(adhar_front_link)
+        request.data['aadhar_back_photo'] = str(adhar_back_link)
+        request.data['pan_photo'] = str(pan_link)
+
+        # print(adhar_front_link)
+        # print(adhar_back_link)
+        # print(pan_link)
+
+        # operator_instance = Operator()
+        # operator_instance.aadhar_front_photo.upload_to = adhar_front_link
+        # operator_instance.aadhar_front_photo.upload_to = adhar_back_link
+        # operator_instance.aadhar_front_photo.upload_to = pan_link
+        # operator_instance.save()
+        # print("@@@@@@@@@@@", operator_instance.aadhar_front_photo.upload_to)
+
+        # operator.file.aadhar_front_photo.upload_to = UploadFiles.get_file_link(self,adhar_front_img, settings.AWS_IMG_FOLDER)
+        # operator.file.aadhar_back_photo.upload_to = UploadFiles.get_file_link(self,adhar_back_img, settings.AWS_IMG_FOLDER)
+        # operator.file.pan.upload_to = UploadFiles.get_file_link(self,pan_img, settings.AWS_IMG_FOLDER)
+        # file_link = UploadAssetsToS3View.create(self,pan_img)
+        # print("############## ",file_link)
 
         if operator_exists:
             return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.',
@@ -125,10 +160,37 @@ class CreateOperatorView(generics.CreateAPIView):
         # token.save()
 
         print('Token generated ---------- ', token)
+        # upload_files = UploadFiles
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.save(user=user)
+            # a_f = instance.aadhar_front_photo.url.replace('http://localhost:8000/', '').replace('%3A', ':/')
+            # a_b = instance.aadhar_back_photo.url.replace('http://localhost:8000/', '').replace('%3A', ':/')
+            # pan = instance.pan_photo.url.replace('http://localhost:8000/', '').replace('%3A', ':/')
+
+            # instance.aadhar_front_photo = a_f
+            # instance.aadhar_back_photo = a_b
+            # instance.pan_photo = pan
+            # print("!!!!!!!!! ", serializer.data.get('aadhar_front_photo'))
+            # a_f = serializer.data.get(
+            #     'aadhar_front_photo').replace('http://localhost:8000/', '')
+            # a_f = a_f.replace('%3A', ':/')
+            # a_b = serializer.data.get(
+            #     'aadhar_back_photo').replace('http://localhost:8000/', '')
+            # a_b = a_b.replace('%3A', ':/')
+            # pan = serializer.data.get(
+            #     'pan_photo').replace('http://localhost:8000/', '')
+            # pan = pan.replace('%3A', ':/')
+            # serializer.data['aadhar_front_photo'] = str(a_f)
+            # serializer.data['aadhar_back_photo'] = str(a_b)
+            # serializer.data['pan_photo'] = str(pan)
+            # print(serializer.data['aadhar_front_photo'])
+            # print(serializer.data['aadhar_back_photo'])
+            # print(serializer.data['pan_photo'])
+            # print(instance.aadhar_front_photo)
+            # print(instance.aadhar_back_photo)
+            # print(instance.pan_photo)
             data = self.get_serializer(instance).data
             return send_response(status=status.HTTP_200_OK, developer_message='Request was successful.',
                                  data=data)
@@ -248,16 +310,16 @@ class OperatorSearchView(generics.ListAPIView):
         name = request.GET.get('name', None)
         owner = request.GET.get('owner', None)
         mobile = request.GET.get('mobile', None)
-        print('Search name ---- ', name)
-        print('Search owner ---- ', owner)
-        print('Search mobile ---- ', mobile)
-        # searchParam = self.kwargs['name']
-        print('Kwargs value ---- ', **kwargs)
+        # print('Search name ---- ', name)
+        # print('Search owner ---- ', owner)
+        # print('Search mobile ---- ', mobile)
+        # # searchParam = self.kwargs['name']
+        # print('Kwargs value ---- ', **kwargs)
         # print('Query Set ----- ',queryset)
         # print('Kwargs value ---- ', searchParam)
         # instance = self.get_object()
         # print('Instance ---- ', instance)
-        print('Request ---- ', request)
+        # print('Request ---- ', request)
         if mobile:
             queryset = queryset.filter(
                 mobile__icontains=mobile).order_by('mobile')
