@@ -1,26 +1,21 @@
 from rest_framework import generics, status
-from bus.models.bus import Bus
 from bus.models.bus_route import BusRoute
+from bus.models.bus_route_return import BusRouteReturn
 from bus.serializers.bus_route import BusRouteSerializer
-from route.models.route import Route
+from bus.serializers.bus_route_return import BusRouteReturnSerializer
 from utils.restful_response import send_response
 from utils.exception_handler import get_object_or_json404
 from bus.pagination import AdminBusListPagination, BusListPagination
-# from route.models.route import Route
 from bus.models.bus_route import BusRoute
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-# from bus.tasks import update_bus_via_route_journey_start_time, delete_bus_route
-# from account.models import AdminUser
-# from operators.helpers.remarks import add_remarks
 
-
-class CreateBusRouteView(generics.CreateAPIView):
+class CreateBusRouteReturnView(generics.CreateAPIView):
     """
     working: Used to create bus route.
     """
 
-    serializer_class = BusRouteSerializer
+    serializer_class = BusRouteReturnSerializer
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)
 
@@ -32,15 +27,15 @@ class CreateBusRouteView(generics.CreateAPIView):
         :return: BusRoute JSON object.
         """
 
-        route_id = request.data.pop('route')
-        bus_id = request.data.pop('bus')
-        start_time = request.data.get('start_time')
-        route = get_object_or_json404(Route.objects.all(), id=route_id)
-        bus = get_object_or_json404(Bus.objects.all(), id=bus_id)
+        # route_id = request.data.pop('route_id')
+        # bus_id = request.data.pop('bus_id')
+        # start_time = request.data.get('start_time')
+        # route = get_object_or_json404(Route.objects.all(), id=route_id)
+        # bus = get_object_or_json404(Bus.objects.all(), id=bus_id)
 
-        if BusRoute.objects.filter(route=route, bus=bus, start_time__contains=start_time).exists():
-            return send_response(status=status.HTTP_400_BAD_REQUEST, ui_message="Bus Route already exists",
-                                 developer_message="Bus Route already exists")
+        # if BusRoute.objects.filter(route=route, bus=bus, start_time__contains=start_time).exists():
+        #     return send_response(status=status.HTTP_400_BAD_REQUEST, ui_message="Bus Route already exists",
+        #                          developer_message="Bus Route already exists")
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -97,35 +92,35 @@ class CreateBusRouteView(generics.CreateAPIView):
 #                              ui_message='Invalid data', error=serializer.errors)
 
 
-class RouteDetailView(generics.RetrieveAPIView):
-    """
-    working: Used to retrieve info of a particular bus_route using his id.
-    """
+# class RouteDetailView(generics.RetrieveAPIView):
+#     """
+#     working: Used to retrieve info of a particular bus_route using his id.
+#     """
 
-    queryset = BusRoute.objects.all()
-    serializer_class = BusRouteSerializer
-    lookup_url_kwarg = 'id'
-    lookup_field = 'id'
+#     queryset = BusRoute.objects.all()
+#     serializer_class = BusRouteSerializer
+#     lookup_url_kwarg = 'id'
+#     lookup_field = 'id'
 
-    def retrieve(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
-        except:
-            return send_response(response_code=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.',
-                                 ui_message='The route_id you\'re trying to access does not exist')
+#     def retrieve(self, request, *args, **kwargs):
+#         try:
+#             instance = self.get_object()
+#         except:
+#             return send_response(response_code=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.',
+#                                  ui_message='The route_id you\'re trying to access does not exist')
 
-        serializer = self.get_serializer(instance)
-        return send_response(response_code=status.HTTP_200_OK, developer_message='Request was successful.',
-                             data=serializer.data)
+#         serializer = self.get_serializer(instance)
+#         return send_response(response_code=status.HTTP_200_OK, developer_message='Request was successful.',
+#                              data=serializer.data)
 
 
-class BusRouteListView(generics.ListAPIView):
+class BusRouteListReturnView(generics.ListAPIView):
     """
     working: Used to get list of bus routes in DB.
     """
 
-    serializer_class = BusRouteSerializer
-    queryset = BusRoute.objects.all()
+    serializer_class = BusRouteReturnSerializer
+    queryset = BusRouteReturn.objects.all()
     # permission_classes = (IsAuthenticated,)
     # authentication_classes = (TokenAuthentication,)
     pagination_class = AdminBusListPagination
@@ -140,18 +135,18 @@ class BusRouteListView(generics.ListAPIView):
 
         # logic to send Bus routes? Filters?
         queryset = self.queryset
-        bus_id = request.GET.get('bus_id', None)
-        route_ids_list = request.GET.getlist('route_id', None)
-        bus_status = request.GET.get('bus_status', None)
+        bus_id = request.GET.get('bus', None)
+        route_id = request.GET.get('route', None)
+        # bus_status = request.GET.get('bus_status', None)
 
         if bus_id:
             queryset = queryset.filter(bus_id=bus_id)
 
-        if route_ids_list:
-            queryset = queryset.filter(route_id__in=route_ids_list)
+        if route_id:
+            queryset = queryset.filter(route_id__in=route_id)
 
-        if bus_status:
-            queryset = queryset.filter(bus__status=bus_status)
+        # if bus_status:
+        #     queryset = queryset.filter(bus__status=bus_status)
 
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)

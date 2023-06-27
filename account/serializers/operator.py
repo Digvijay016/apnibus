@@ -15,8 +15,8 @@ class OperatorSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Operator
         fields = ('id', 'name', 'hindi_name', 'owner', 'email', 'mobile', 'town', 'address', 'gstin', 'aadhar_number',
-                  'aadhar_front_photo','aadhar_back_photo','pan_number','pan_photo','bus_count', 'poc_name', 'poc_number', 'is_active','status',
-                  'show_qr_code', 'show_ticket_msg', 'show_brand_name', 'show_mob_number','setup_fee','monthly_subscription_fee')
+                  'aadhar_front_photo', 'aadhar_back_photo', 'pan_number', 'pan_photo', 'bus_count', 'poc_name', 'poc_number', 'is_active', 'status',
+                  'show_qr_code', 'show_ticket_msg', 'show_brand_name', 'show_mob_number', 'setup_fee', 'monthly_subscription_fee', 'pos_given_as')
 
     def get_email(self, obj):
         operator_email = obj.user.email

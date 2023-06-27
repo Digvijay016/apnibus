@@ -1,9 +1,11 @@
 from django.urls import path
+from bus.models.bus_route_return import BusRouteReturn
 
 # from account.views.operator import CreateOperatorView
 # from bus.views.bus_via_route_pricing import AutoFillBusViaRoutePricing
 from bus.views.bus import BusListView, CreateBusView
 from bus.views.bus_route import BusRouteListView, CreateBusRouteView
+from bus.views.bus_route_return import BusRouteListReturnView, CreateBusRouteReturnView
 from bus.views.bus_route_town import BusRouteTownListView, CreateBusRouteTownView, UpdateBusRouteTownView
 from bus.views.bus_route_town_stoppage import BusRouteTownStoppageListView, BusUpdateRouteTownStoppageView, CreateBusRouteTownStoppageView
 # CreateBusRouteView, BusRouteListView,
@@ -40,4 +42,8 @@ urlpatterns = [
          name='bus_route_town_stoppage_update'),
     path('bus_route_town_stoppage_list', BusRouteTownStoppageListView.as_view(),
          name='bus_route_town_stoppage_list'),
+    path('bus_route_return_create', CreateBusRouteReturnView.as_view(),
+         name='bus_route_return_create'),
+    path('bus_route_return_list', BusRouteListReturnView.as_view(),
+         name='bus_route_return_list'),
 ]

@@ -25,6 +25,13 @@ class Operator(TimeStampedModel):
     ONBOARDED = 'onboarded'
     DEBOARDED = 'deboarded'
     LOCKED = 'locked'
+    DEMO = 'Demo'
+    SOLD = 'Sold'
+
+    POS_GIVEN_AS = (
+        (DEMO, 'Demo'),
+        (SOLD, 'Sold')
+    )
 
     OPERATOR_STATUS = (
         (ONBOARDED, 'onboarded'),
@@ -50,10 +57,11 @@ class Operator(TimeStampedModel):
     town = models.CharField(max_length=255, null=True, default="")
     gstin = models.CharField(max_length=20, null=True, blank=True)
     pan_number = models.CharField(max_length=20, null=True, blank=True)
-    pan_photo = models.CharField(max_length=255,null=True, blank=True)
+    pan_photo = models.CharField(max_length=255, null=True, blank=True)
     aadhar_number = models.CharField(max_length=20, null=True, blank=True)
-    aadhar_front_photo = models.CharField(max_length=255,null=True, blank=True)
-    aadhar_back_photo = models.CharField(max_length=255,null=True, blank=True)
+    aadhar_front_photo = models.CharField(
+        max_length=255, null=True, blank=True)
+    aadhar_back_photo = models.CharField(max_length=255, null=True, blank=True)
     poc_name = models.CharField(max_length=20, null=True, blank=True)
     poc_number = models.CharField(max_length=20, null=True, blank=True)
     setup_fee = models.IntegerField(null=True, blank=True)
@@ -69,6 +77,8 @@ class Operator(TimeStampedModel):
     version = models.CharField(max_length=20, null=True, blank=True)
     status = models.CharField(
         max_length=225, choices=OPERATOR_STATUS, default=ONBOARDED)
+    pos_given_as = models.CharField(
+        max_length=20, choices=POS_GIVEN_AS, null=False)
     history = HistoricalRecords()
 
     def __str__(self):

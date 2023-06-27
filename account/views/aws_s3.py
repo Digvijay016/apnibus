@@ -12,37 +12,35 @@ class UploadAssetsToS3View(generics.CreateAPIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-    def create(self, image_name,mobile, *args, **kwargs):
-        time_now = datetime.now()
-        # img_file = request.FILES["img_file"]
-        img_file = image_name
-        file_name = img_file.name
-        file_extension = file_name.split(".")[-1]
-        file_name = file_name.replace(
-            f".{file_extension}", '') + str(time_now) + f".{file_extension}"
+    def create(self, image_name, folder_name, *args, **kwargs):
 
-        # print("AWS File Name ######### : ", file_name,
-        #       settings.AWS_BUCKET_NAME, settings.AWS_IMG_FOLDER)
+        if image_name:
+            time_now = datetime.now()
+            # img_file = request.FILES["img_file"]
+            img_file = str(image_name)
+            # file_name = img_file.name
+            file_extension = img_file.split(".")[-1]
+            file_name = img_file.replace(
+                f".{file_extension}", '') + str(time_now) + f".{file_extension}"
 
-        with open(f'{file_name}', 'wb+') as destination:
-            for chunk in img_file.chunks():
-                destination.write(chunk)
+            with open(f'{file_name}', 'wb+') as destination:
+                for chunk in image_name.chunks():
+                    destination.write(chunk)
 
-        # Upload files
-        # UploadFiles().get_file_link('img.png',settings.AWS_IMG_FOLDER)
-        UploadFiles().upload_file(file_name, settings.AWS_BUCKET_NAME, settings.AWS_IMG_FOLDER+f'/{mobile}')
+            UploadFiles().upload_file(file_name, settings.AWS_BUCKET_NAME,
+                                    settings.AWS_IMG_FOLDER+f'/{folder_name}')
 
-        file_link = UploadFiles().get_file_link(file_name, settings.AWS_IMG_FOLDER+f'/{mobile}')
-        # print("!!!!!!!!!!!", file_link)
-        # return file_link
-        os.remove(file_name)
+            file_link = UploadFiles().get_file_link(
+                file_name, settings.AWS_IMG_FOLDER+f'/{folder_name}')
+            os.remove(file_name)
 
-        data = {
-            "file_link": file_link
-        }
+            data = {
+                "file_link": file_link
+            }
 
-        return file_link,send_response(
-            data=data,
-            status=status.HTTP_200_OK,
-            developer_message="Request was successful"
-        )
+            return file_link, send_response(
+                data=data,
+                status=status.HTTP_200_OK,
+                developer_message="Request was successful"
+            )
+        return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message='Request failed.', ui_message='Invalid data')#, error=serializer.errors)

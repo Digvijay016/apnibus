@@ -10,7 +10,7 @@ from account.helpers.otp_service import OTPService
 from account.serializers.commuter import UserOTPGenerationSerializer
 from account.models.operators import Operator
 from account.views.aws_s3 import UploadAssetsToS3View
-from utils.aws_s3 import UploadFiles
+# from utils.aws_s3 import UploadFiles
 from utils.restful_response import send_response
 from account.models.user_authentication import UserAuthenticationOTP
 from account.models.user import User
@@ -105,8 +105,8 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
 
 class CreateOperatorView(generics.CreateAPIView):
     serializer_class = OperatorSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         mobile = request.data.get('mobile')
@@ -121,9 +121,9 @@ class CreateOperatorView(generics.CreateAPIView):
         adhar_back_img = request.data.get('aadhar_back_photo')
         pan_img = request.data.get('pan_photo')
         adhar_front_link, _ = UploadAssetsToS3View.create(
-            self, adhar_front_img, mobile)
-        adhar_back_link, _ = UploadAssetsToS3View.create(self, adhar_back_img,mobile)
-        pan_link, _ = UploadAssetsToS3View.create(self, pan_img,mobile)
+            self, adhar_front_img, 'operator/'+'mobile-'+mobile)
+        adhar_back_link, _ = UploadAssetsToS3View.create(self, adhar_back_img,'operator/'+'mobile-'+mobile)
+        pan_link, _ = UploadAssetsToS3View.create(self, pan_img,'operator/'+'mobile-'+mobile)
 
         request.data['aadhar_front_photo'] = str(adhar_front_link)
         request.data['aadhar_back_photo'] = str(adhar_back_link)

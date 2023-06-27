@@ -10,11 +10,9 @@ class Bus(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     bus_number = models.CharField(max_length=255, unique=True)
-    pos_serial_no = models.FileField(
-        upload_to='upload/assets', null=True, blank=True)
+    pos_serial_no = models.CharField(max_length=255,null=True, blank=True)
     pos_dsn_number = models.CharField(max_length=255, null=True, blank=True)
-    gps_sim_image = models.FileField(
-        upload_to='upload/assets', null=True, blank=True)
+    gps_sim_image = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.number

@@ -9,5 +9,4 @@ class PriceSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = PriceMatrix
-        fields = ('id', 'bus_route', 'route_town',
-                  'rows', 'columns', 'price_matrix')
+        fields = ('id', 'bus_route', 'price_matrix')

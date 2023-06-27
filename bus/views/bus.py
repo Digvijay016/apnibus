@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from account.views.aws_s3 import UploadAssetsToS3View
 from bus.models.bus import Bus
 from bus.models.bus_route import BusRoute
 # from bus.models.bus_route_journey import BusRouteJourney
@@ -33,6 +34,18 @@ class CreateBusView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         # print("1", request.data)
         # print("2", serializer.is_valid())
+        bus_number = request.data.get('bus_number')
+        pos_serial_img = request.data.get('pos_serial_no')
+        gps_sim_img = request.data.get('gps_sim_image')
+        # pan_img = request.data.get('pan_photo')
+        pos_serial_link, _ = UploadAssetsToS3View.create(
+            self, pos_serial_img, '/bus/'+'bus-'+bus_number)
+        gps_sim_link, _ = UploadAssetsToS3View.create(
+            self, gps_sim_img, '/bus/'+'bus-'+bus_number)
+        # pan_link, _ = UploadAssetsToS3View.create(self, pan_img,mobile)
+
+        request.data['pos_serial_no'] = str(pos_serial_link)
+        request.data['gps_sim_image'] = str(gps_sim_link)
         if serializer.is_valid():
             instance = serializer.save()
 
@@ -71,9 +84,9 @@ class BusListView(generics.ListAPIView):
 
         queryset = Bus.objects.all()
         bus_id = request.GET.get('bus_id', None)
-        company_name = request.GET.get('company_name', None)
-        operator_mobile_number = request.GET.get(
-            'operator_mobile_number', None)
+        # company_name = request.GET.get('company_name', None)
+        # operator_mobile_number = request.GET.get(
+        #     'operator_mobile_number', None)
         if bus_id:
             queryset = queryset.filter(id=bus_id)
 

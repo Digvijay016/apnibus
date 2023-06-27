@@ -41,3 +41,7 @@ SELECT * FROM bus_busroute
 
 Drop Table bus_historicalbusroute
 Drop Table bus_busroute
+
+
+DELETE FROM pricing_pricematrix
+WHERE bus_route_id = '4fc94192-14c8-11ee-9aae-7e44607f8f04';
