@@ -14,7 +14,32 @@ class BusSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Bus
-        fields = ('id', 'bus_number', 'pos_serial_no', 'pos_dsn_number', 'gps_sim_image')
+        fields = ('id', 'bus_number','operator', 'pos_serial_no', 'pos_dsn_number', 'gps_sim_image')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        
+        # Modify the aadhar_front_photo URL format in the representation
+        # print(representation['aadhar_front_photo'])
+        # print(representation['aadhar_back_photo'])
+        # print(representation['pan_photo'])
+        if 'pos_serial_no' in representation and representation['pos_serial_no'] is not None:
+            modified_url = representation['pos_serial_no'].replace("http://localhost:8000/media/",'').replace('%3A',':').replace('https:/','https://')
+            print(modified_url)
+            representation['pos_serial_no'] = modified_url
+
+        if 'gps_sim_img' in representation and representation['gps_sim_img'] is not None:
+            modified_url = representation['gps_sim_img'].replace("http://localhost:8000/media/",'').replace('%3A',':').replace('https:/','https://')
+            print(modified_url)
+            representation['gps_sim_img'] = modified_url
+        
+        # if 'pan_photo' in representation and representation['pan_photo'] is not None:
+        #     modified_url = representation['pan_photo'].replace("http://localhost:8000/media/",'').replace('%3A',':').replace('https:/','https://')
+        #     # print(modified_url)
+        #     representation['pan_photo'] = modified_url
+        
+        return representation
+
 
     # def __init__(self, *args, **kwargs):
         # super(BusSerializer, self).__init__(*args, **kwargs)

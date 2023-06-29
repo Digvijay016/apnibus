@@ -28,7 +28,7 @@ class BusRouteTownStoppage(TimeStampedModel):
     longitude = models.FloatField(null=True, blank=True)
     duration = models.IntegerField(null=True)
     start_time = models.TimeField(null=True)
-    # calculated_duration = models.IntegerField(null=True)
+    calculated_duration = models.IntegerField(null=True)
     calculated_start_time = models.TimeField(null=True)
     is_active = models.BooleanField(default=True)
     status = models.CharField(max_length=20, choices=STATUS, default=ACTIVE)

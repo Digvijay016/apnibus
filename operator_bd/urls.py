@@ -16,6 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import Route, DynamicRoute, SimpleRouter
+from rest_framework.routers import DefaultRouter
+# from django.conf import settings
+# from django.conf.urls.static import static
+
+from account.views.operator import CreateOperatorView
+from bus.views.bus import CreateBusView
+from bus.views.bus_route import CreateBusRouteView
+from bus.views.bus_route_town import CreateBusRouteTownView
+from pricing.views.price import CreatePriceView
+from route.views.district import CreateDistrictView
+from route.views.route import CreateRouteView
+from route.views.route_town import CreateRouteTownView
+from route.views.route_town_stoppage import CreateRouteTownStoppageView
+from route.views.state import CreateStateView
+from route.views.town import CreateTownView
+from route.views.town_stoppage import CreateTownStoppageView
 
 
 class CustomRouter(SimpleRouter):
@@ -58,12 +74,25 @@ class CustomRouter(SimpleRouter):
     ]
 
 
-router = CustomRouter()
-
+router = DefaultRouter()
+router.register(r'operators', CreateOperatorView)
+router.register(r'bus', CreateBusView)
+router.register(r'bus_route', CreateBusRouteView)
+router.register(r'bus_route_town', CreateBusRouteTownView)
+router.register(r'pricing', CreatePriceView)
+router.register(r'towns', CreateTownView)
+router.register(r'district', CreateDistrictView)
+router.register(r'states', CreateStateView)
+router.register(r'town_stoppage', CreateTownStoppageView)
+router.register(r'route', CreateRouteView)
+router.register(r'route_town', CreateRouteTownView)
+router.register(r'route_town_stoppage', CreateRouteTownStoppageView)
+# router.register(r'routes', CreateRouteView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('operator/', include('account.urls')),
-    path('bus/', include('bus.urls')),
-    path('pricing/', include('pricing.urls'))
-]
+    path('api/', include(router.urls)),
+    # path('bus/', include('bus.urls')),
+    # path('pricing/', include('pricing.urls')),
+    # path('route/', include('route.urls'))
+]  # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

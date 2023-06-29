@@ -19,13 +19,15 @@ class Route(TimeStampedModel):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
-    from_town = models.ForeignKey(Town, on_delete=models.PROTECT, related_name="route_from_town", null=True)
-    to_town = models.ForeignKey(Town, on_delete=models.PROTECT, related_name="route_to_town", null=True)
+    from_town = models.ForeignKey(
+        Town, on_delete=models.PROTECT, related_name="route_from_town", null=True)
+    to_town = models.ForeignKey(
+        Town, on_delete=models.PROTECT, related_name="route_to_town", null=True)
     name = models.CharField(max_length=255, null=True)
     via = models.CharField(max_length=255, default="")
-    # is_default = models.BooleanField(default=False)
-    # status = models.CharField(max_length=255, choices=STATUS, default=ACTIVE)
-    # reverse_route_exists = models.BooleanField(default=False)
+    is_default = models.BooleanField(default=False)
+    status = models.CharField(max_length=255, choices=STATUS, default=ACTIVE)
+    reverse_route_exists = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     # class Meta:

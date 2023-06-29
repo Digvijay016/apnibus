@@ -24,7 +24,7 @@ class RouteTownStoppage(TimeStampedModel):
         RouteTown, on_delete=models.CASCADE, null=True)
     town_stoppage = models.ForeignKey(
         TownStoppage, on_delete=models.PROTECT, null=True)
-    duration = models.IntegerField()
+    duration = models.IntegerField(null=True)
     status = models.CharField(max_length=20, choices=STATUS, default=ACTIVE)
     history = HistoricalRecords()
 

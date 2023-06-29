@@ -15,15 +15,14 @@ class RouteSerializer(DynamicFieldsModelSerializer):
         model = Route
         fields = ('id', 'from_town', 'to_town', 'via', 'name')
 
-    def get_bus_count(self, obj):
-        return BusRoute.objects.filter(route=obj).count()
+#     def get_bus_count(self, obj):
+#         return BusRoute.objects.filter(route=obj).count()
 
-    # def get_town_count(self, obj):
-    #     return RouteTown.objects.filter(route=obj).count()
+#     # def get_town_count(self, obj):
+#     #     return RouteTown.objects.filter(route=obj).count()
 
 
-class RouteSearchSerializer(DynamicFieldsModelSerializer):
-    class Meta:
-        model = Route
-        fields = ('id',  'name')
-
+# class RouteSearchSerializer(DynamicFieldsModelSerializer):
+#     class Meta:
+#         model = Route
+#         fields = ('id',  'name')

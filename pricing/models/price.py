@@ -1,9 +1,13 @@
-from email.policy import default
+# from email.policy import default
 import uuid
 from django.db import models
 
 from bus.models.bus_route import BusRoute
 from route.models.route_town import RouteTown
+# from django.db.models.signals import pre_save
+# from django.dispatch import receiver
+
+# from utils.exception_handler import get_object_or_json404
 
 
 class PriceMatrix(models.Model):
@@ -13,9 +17,9 @@ class PriceMatrix(models.Model):
     # bus_route = models.ForeignKey(
     #     BusRoute, on_delete=models.CASCADE, null=True)
     bus_route = models.ForeignKey(
-        BusRoute, on_delete=models.CASCADE, null=False)
+        BusRoute, on_delete=models.CASCADE, null=True)
     # route_town = models.ForeignKey(
     #     RouteTown, on_delete=models.CASCADE, null=True)
     # rows = models.PositiveIntegerField(default=3,null=True)
     # columns = models.PositiveIntegerField(default=3,null=True)
-    price_matrix = models.JSONField(default={}, null=True)
+    price_matrix = models.JSONField(default=dict, null=True)

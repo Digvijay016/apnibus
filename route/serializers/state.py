@@ -5,4 +5,4 @@ from route.models.state import State
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'code', 'short_name', 'hindi_name')

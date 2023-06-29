@@ -6,7 +6,7 @@ urlpatterns = [
     path('list', PriceListView.as_view(), name='price_list'),
     path('update/<str:bus_route>', PricingUpdateView.as_view(),
          name='price_update'),
-    path('delete/<str:bus_route>', DeletePricingView.as_view(),
+    path('delete/', DeletePricingView.as_view(),
          name='price_delete')
     # path('update/<str:id>', OperatorUpdateView.as_view(), name='operator_update'),
     # path('retrieve/<str:id>', OperatorRetrieveView.as_view(),

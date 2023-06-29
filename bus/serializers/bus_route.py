@@ -11,8 +11,8 @@ class BusRouteSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = BusRoute
-        fields = ('id', 'bus', 'route', 'from_town', 'to_town',
-                  'start_time', 'arrival_time')
+        fields = ('id', 'bus', 'from_town', 'to_town',
+                  'start_time', 'arrival_time', 'route')
 
     # def get_remarks(self, obj):
     #     qs = OperatorRemark.objects.filter(bus_route=obj)

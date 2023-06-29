@@ -1,5 +1,5 @@
-from route.models import Route, RouteTown, RouteTownStoppage, RouteTownStoppage
-from route.models import Town
+from route.models import Route, RouteTown, RouteTownStoppage
+from route.models.town import Town
 
 
 def clone_route(route_id, new_route_name, via, new_towns, duration_from_first_town, distance_from_first_town):
