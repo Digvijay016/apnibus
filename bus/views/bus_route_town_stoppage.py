@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import viewsets, generics, status
 from bus.models.bus_route_town import BusRouteTown
 from bus.models.bus_route_town_stoppage import BusRouteTownStoppage
 from route.models.route_town_stoppage import RouteTownStoppage
@@ -12,7 +12,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
-class CreateBusRouteTownStoppageView(generics.CreateAPIView):
+class CreateBusRouteTownStoppageView(viewsets.ModelViewSet):
     """
     working: Using this to create BusRouteTownStoppage.
     """

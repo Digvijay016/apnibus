@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# from ast import operator
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import Route, DynamicRoute, SimpleRouter
@@ -21,12 +22,15 @@ from rest_framework.routers import DefaultRouter
 # from django.conf.urls.static import static
 
 from account.views.operator import CreateOperatorView
+from account.views.sales_team import CreateSalesUser, UserAuthOTPViewset
 from bus.views.bus import CreateBusView
 from bus.views.bus_route import CreateBusRouteView
+from bus.views.bus_route_return import BusRouteReturnView
 from bus.views.bus_route_town import CreateBusRouteTownView
 from pricing.views.price import CreatePriceView
 from route.views.district import CreateDistrictView
 from route.views.route import CreateRouteView
+from route.views.route_missing_town import RouteMissingTownView
 from route.views.route_town import CreateRouteTownView
 from route.views.route_town_stoppage import CreateRouteTownStoppageView
 from route.views.state import CreateStateView
@@ -87,11 +91,16 @@ router.register(r'town_stoppage', CreateTownStoppageView)
 router.register(r'route', CreateRouteView)
 router.register(r'route_town', CreateRouteTownView)
 router.register(r'route_town_stoppage', CreateRouteTownStoppageView)
+router.register(r'route_return', BusRouteReturnView)
+router.register(r'missing_town', RouteMissingTownView)
+# router.register(r'sales_team/otp', UserAuthOTPViewset)
+router.register(r'sales_team', CreateSalesUser, basename="create-sales-user")
 # router.register(r'routes', CreateRouteView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('sales_team/', include('account.urls'))
     # path('bus/', include('bus.urls')),
     # path('pricing/', include('pricing.urls')),
     # path('route/', include('route.urls'))

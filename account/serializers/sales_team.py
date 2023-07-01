@@ -2,33 +2,35 @@
 # from booking.models.ticket import TicketDetail
 # from operators.models.operator_payment import OperatorInvoice
 from rest_framework import serializers
-# from account.models import ConductorSE
-from django.db.models import Sum
-from django.utils import timezone
-from django.db.models import Min
+
+from account.models.sales_team import SalesTeamUser
+# # from account.models import ConductorSE
+# from django.db.models import Sum
+# from django.utils import timezone
+# from django.db.models import Min
 
 # from utils.serializers import DynamicFieldsModelSerializer
-from bus.models import Bus
-from datetime import date, timedelta
+# from bus.models import Bus
+# from datetime import date, timedelta
 
 
 class SalesTeamDataSerializer(serializers.ModelSerializer):
     # booking_status = serializers.SerializerMethodField()
     # payment_status = serializers.SerializerMethodField()
-    operator_detail = serializers.SerializerMethodField()
-    # pos_detail = serializers.SerializerMethodField()
+    # operator_detail = serializers.SerializerMethodField()
+    # # pos_detail = serializers.SerializerMethodField()
 
-    today_date = date.today()
-    yesterday_date = today_date - timedelta(days=1)
+    # today_date = date.today()
+    # yesterday_date = today_date - timedelta(days=1)
     # buses_in_yesterday_tickets = TicketDetail.objects.filter(created_on__date=yesterday_date).values_list('bus', flat=True)
 
     class Meta:
-        model = Bus
-        fields = ('id', 'created_on', 'number', 'gps_status', 'pos_lock', 'conductor_contact',
-                  'conductor_name', 'booking_status', 'payment_status', 'operator_detail', 'pos_detail')
-
-    def get_booking_status(self, obj):
-        return obj.id in self.buses_in_yesterday_tickets
+        model = SalesTeamUser
+        # fields = ('id', 'created_on', 'number', 'gps_status', 'pos_lock', 'conductor_contact',
+        #           'conductor_name', 'booking_status', 'payment_status', 'operator_detail', 'pos_detail')
+        fields = ('id', 'user', 'name', 'mobile', 'email', 'type')
+    # def get_booking_status(self, obj):
+    #     return obj.id in self.buses_in_yesterday_tickets
 
     # def get_payment_status(self, obj):
     #     operator_invoice = OperatorInvoice.objects.filter(operator=obj.operator, is_paid=False, is_visible=True)

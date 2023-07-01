@@ -39,7 +39,8 @@ class OTPService():
 
         new_otp_created = False
         mobile_number = mobile
-        otp_exists = UserAuthenticationOTP.objects.filter(mobile=mobile_number, is_valid=True, is_deleted=False).first()
+        otp_exists = UserAuthenticationOTP.objects.filter(
+            mobile=mobile_number, is_valid=True, is_deleted=False).first()
         if otp_exists:
             validity = cls.check_validity(otp_exists)
             if validity:
@@ -99,7 +100,8 @@ class UserOTPService():
 
         new_otp_created = False
         mobile_number = mobile
-        otp_exists = UserAuthenticationOTP.objects.filter(mobile=mobile_number, is_valid=True, is_deleted=False).first()
+        otp_exists = UserAuthenticationOTP.objects.filter(
+            mobile=mobile_number, is_valid=True, is_deleted=False).first()
         if otp_exists:
             validity = cls.check_validity(otp_exists)
             if validity:

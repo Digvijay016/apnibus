@@ -67,30 +67,30 @@ Create Table bus_BusRoutetown (
 
 SELECT sqlite3_cwd()
 
-ATTACH DATABASE '../dummy_4.sqlite3' AS source;
+ATTACH DATABASE '/Users/diggy/Desktop/Ind/operator_bd/dummy_10.sqlite3' AS source;
 
-CREATE TABLE bus_BusRoutetown AS SELECT * FROM source.bus_BusRoutetown WHERE 0;
+CREATE TABLE route_routemissingtown AS SELECT * FROM source.route_routemissingtown WHERE 0;
 
 .open dummy.sqlite3
 ATTACH 'dummy_3.sqlite3' AS target;
 
 BEGIN;
-INSERT INTO target.bus_busroute
-SELECT * FROM bus_busroute;
+INSERT INTO target.route_routemissingtown
+SELECT * FROM route_routemissingtown;
 
 COMMIT;
 
 .close
 
 -- Connect to the source database
-ATTACH '/Users/diggy/Desktop/Ind/operator_bd/dummy_2.sqlite3' AS source_db;
+ATTACH '/Users/diggy/Desktop/Ind/operator_bd/dummy_10.sqlite3' AS source_db;
 
 -- Connect to the target database
 ATTACH '/Users/diggy/Desktop/Ind/operator_bd/dummy_3.sqlite3' AS target_db;
 
 -- Clone the table
-CREATE TABLE IF NOT EXISTS target_db.bus_busroutetownstoppage AS
-SELECT * FROM source_db.bus_busroutetownstoppage;
+CREATE TABLE IF NOT EXISTS target_db.route_routemissingtown AS
+SELECT * FROM source_db.route_routemissingtown;
 
 -- Detach the databases
 DETACH source_db;
@@ -100,10 +100,65 @@ ALTER TABLE bus_busroute RENAME COLUMN departure_time TO start_time;
 
 ALTER TABLE bus_busroute ADD COLUMN route_ids TEXT;
 ALTER TABLE bus_busroute ADD COLUMN bus_id INTEGER;
+ALTER TABLE bus_historicalbusroutetown ADD COLUMN bus_route_id CHAR(32);
+ALTER TABLE bus_historicalbusroutetown ADD COLUMN town_status VARCHAR(20) DEFAULT 'active';
+ALTER TABLE bus_historicalbusroutetown ADD COLUMN town_stoppage_status VARCHAR(20) DEFAULT 'active';
+ALTER TABLE bus_historicalbusroutetown DROP COLUMN status;
 ALTER TABLE bus_busroute ADD COLUMN via TEXT;
 ALTER TABLE bus_historicalbusroute ADD COLUMN via TEXT;
 ALTER TABLE bus_busroutetownstoppage ADD COLUMN calculated_duration INTEGER;
-PRAGMA table_info(bus_busroute);
+ALTER TABLE bus_busroutetown ADD COLUMN missing_towns TEXT;
+ALTER TABLE bus_historicalbusroutetown ADD COLUMN missing_towns TEXT;
+PRAGMA table_info(route_historicalroutetown);
 
 
+Create Table route_routemissingtown(
+    created_on DATETIME NOT NULL DEFAULT NULL,
+    updated_on DATETIME NOT NULL DEFAULT NULL,
+    is_deleted BOOL NOT NULL DEFAULT NULL,
+    id CHAR(32) NOT NULL PRIMARY KEY DEFAULT NULL,
+    route_id CHAR(32) DEFAULT NULL,
+    missing_town CHAR(255) DEFAULT NULL
+)
 
+CREATE TABLE route_historicalroutemissingtown (
+    created_on DATETIME NOT NULL DEFAULT NULL,
+    updated_on DATETIME NOT NULL DEFAULT NULL,
+    is_deleted BOOL NOT NULL DEFAULT NULL,
+    id CHAR(32) NOT NULL DEFAULT NULL,
+    history_id INTEGER DEFAULT NULL,
+    history_date DATETIME NOT NULL DEFAULT NULL,
+    history_change_reason VARCHAR(100) DEFAULT NULL,
+    history_type VARCHAR(1) NOT NULL DEFAULT NULL,
+    history_user_id CHAR(32) DEFAULT NULL,
+    route_id CHAR(32) DEFAULT NULL,
+    missing_town CHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE temp_table (
+    created_on DATETIME NOT NULL DEFAULT NULL,
+    updated_on DATETIME NOT NULL DEFAULT NULL,
+    is_deleted BOOL NOT NULL DEFAULT NULL,
+    id CHAR(32) NOT NULL DEFAULT NULL,
+    history_id INTEGER DEFAULT NULL,
+    history_date DATETIME NOT NULL DEFAULT NULL,
+    history_change_reason VARCHAR(100) DEFAULT NULL,
+    history_type VARCHAR(1) NOT NULL DEFAULT NULL,
+    history_user_id CHAR(32) DEFAULT NULL,
+    route_id CHAR(32) DEFAULT NULL,
+    missing_town CHAR(255) DEFAULT NULL
+);
+
+INSERT INTO temp_table SELECT * FROM route_historicalroutemissingtown;
+
+DROP TABLE route_historicalroutemissingtown;
+
+-- Step 4: Rename the temporary table to the original table name
+ALTER TABLE temp_table RENAME TO route_historicalroutemissingtown;
+
+find . -type d -name '__pycache__' -exec rm -rf {} +
+
+find . -type d -name 'migrations' -exec rm -rf {} +
+
+
+ALTER TABLE route_historicalroutemissingtown ALTER COLUMN history_id DROP NOT NULL;

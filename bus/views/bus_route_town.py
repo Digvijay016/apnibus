@@ -26,7 +26,7 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     http_method_names = ['get', 'post', 'put', 'delete']
-    lookup_field = 'bus_route_id'
+    # lookup_field = 'bus_route_id'
 
 #     def create(self, request, *args, **kwargs):
 #         """

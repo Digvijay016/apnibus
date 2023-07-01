@@ -16,9 +16,9 @@ from utils.restful_response import send_response
 from account.models.user_authentication import UserAuthenticationOTP
 from account.models.sales_team import SalesTeamUser
 from account.models.user import User
-from rest_framework import generics
+from rest_framework import viewsets,generics
 from utils.apnibus_logger import apnibus_logger
-from bus.models import Bus
+# from bus.models import Bus
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from datetime import date, timedelta
@@ -117,28 +117,31 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
                                  developer_message='Invalid otp or mobile number')
 
 
-class CreateSalesUser(generics.CreateAPIView):
-    def create(self, request, *args, **kwargs):
-        mobile_number = request.data.get('mobile_number', None)
-        name = request.data.get('name', None)
-        internal_user_obj, created = SalesTeamUser.objects.get_or_create(
-            mobile=mobile_number, name=name, type=SalesTeamUser.SALES)
+class CreateSalesUser(viewsets.ModelViewSet):
+    queryset = SalesTeamUser.objects.all()
+    serializer_class = SalesTeamDataSerializer
+    # def create(self, request, *args, **kwargs):
+    #     mobile_number = request.data.get('mobile_number', None)
+    #     name = request.data.get('name', None)
+    #     internal_user_obj, created = SalesTeamUser.objects.get_or_create(
+    #         mobile=mobile_number, name=name, type=SalesTeamUser.SALES)
 
-        if created:
-            user = User.objects.create(
-                username=uuid.uuid1(), user_type=User.INTERNAL_USER)
-            token = Token.objects.create(user=user)
-            internal_user_obj.user = user
-            internal_user_obj.save()
+    #     if created:
+    #         user = User.objects.create(
+    #             username=uuid.uuid1(), user_type=User.INTERNAL_USER)
+    #         token = Token.objects.create(user=user)
+    #         print('################',token)
+    #         internal_user_obj.user = user
+    #         internal_user_obj.save()
 
-            return send_response(status=status.HTTP_200_OK, developer_message="User Created")
+    #         return send_response(status=status.HTTP_200_OK, developer_message="User Created")
 
-        return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message="User already exists")
+    #     return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message="User already exists")
 
 
-class SalesTeamDataView(generics.ListAPIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+# class SalesTeamDataView(generics.ListAPIView):
+#     authentication_classes = (TokenAuthentication,)
+#     permission_classes = (IsAuthenticated,)
 
     # def list(self, request, *args, **kwargs):
     #     user = request.user
@@ -193,75 +196,75 @@ class SalesTeamDataView(generics.ListAPIView):
     #                          data=data)
 
 
-class SalesTeamDataDetialView(generics.ListAPIView):
-    serializer_class = SalesTeamDataSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+# class SalesTeamDataDetialView(generics.ListAPIView):
+#     serializer_class = SalesTeamDataSerializer
+#     authentication_classes = (TokenAuthentication,)
+#     permission_classes = (IsAuthenticated,)
 
-    def list(self, request, *args, **kwargs):
+#     def list(self, request, *args, **kwargs):
 
-        total_buses = request.GET.get('total_buses', None)
-        total_pos = request.GET.get('total_pos', None)
-        gps_not_working = request.GET.get('gps_not_working', None)
-        conductor_not_using_pos = request.GET.get(
-            'conductor_not_using_pos', None)
-        pos_locked = request.GET.get('pos_locked', None)
-        this_month_sale = request.GET.get('this_month_sale', None)
-        # pending_pyment = request.GET.get('pending_pyment', None)
-        # pos_on_demo = request.GET.get('pos_on_demo', None)
-        bus = request.GET.get('bus_id', None)
+#         total_buses = request.GET.get('total_buses', None)
+#         total_pos = request.GET.get('total_pos', None)
+#         gps_not_working = request.GET.get('gps_not_working', None)
+#         conductor_not_using_pos = request.GET.get(
+#             'conductor_not_using_pos', None)
+#         pos_locked = request.GET.get('pos_locked', None)
+#         this_month_sale = request.GET.get('this_month_sale', None)
+#         # pending_pyment = request.GET.get('pending_pyment', None)
+#         # pos_on_demo = request.GET.get('pos_on_demo', None)
+#         bus = request.GET.get('bus_id', None)
 
-        user = request.user
-        queryset = Bus.objects.filter(bd__user=user, is_pos_connected=True)
+#         user = request.user
+#         queryset = Bus.objects.filter(bd__user=user, is_pos_connected=True)
 
-        if bus:
-            queryset = Bus.objects.filter(bd__user=user, id=bus)
+#         if bus:
+#             queryset = Bus.objects.filter(bd__user=user, id=bus)
 
-        if total_buses:
-            queryset = Bus.objects.filter(bd__user=user)
-        if total_pos:
-            queryset = queryset
-        if gps_not_working:
-            queryset = queryset.filter(
-                is_pos_connected=True).exclude(gps_status='installed')
-        if conductor_not_using_pos:
-            today_date = date.today()
-            yesterday_date = today_date - timedelta(days=1)
-            # yesterday_tickets = TicketDetail.objects.filter(created_on__date=yesterday_date, bus__is_pos_connected = True )
-            # yesterday_pos_using_bus_list = yesterday_tickets.values_list('bus', flat=True).distinct()
-            # queryset = queryset.exclude(id__in=yesterday_pos_using_bus_list)
-        if pos_locked:
-            queryset = queryset.filter(pos_lock=True)
-        if this_month_sale:
-            current_month = timezone.now().month
-            current_year = timezone.now().year
-            queryset = queryset.filter(
-                created_on__month=current_month, created_on__year=current_year)
+#         if total_buses:
+#             queryset = Bus.objects.filter(bd__user=user)
+#         if total_pos:
+#             queryset = queryset
+#         if gps_not_working:
+#             queryset = queryset.filter(
+#                 is_pos_connected=True).exclude(gps_status='installed')
+#         if conductor_not_using_pos:
+#             today_date = date.today()
+#             yesterday_date = today_date - timedelta(days=1)
+#             # yesterday_tickets = TicketDetail.objects.filter(created_on__date=yesterday_date, bus__is_pos_connected = True )
+#             # yesterday_pos_using_bus_list = yesterday_tickets.values_list('bus', flat=True).distinct()
+#             # queryset = queryset.exclude(id__in=yesterday_pos_using_bus_list)
+#         if pos_locked:
+#             queryset = queryset.filter(pos_lock=True)
+#         if this_month_sale:
+#             current_month = timezone.now().month
+#             current_year = timezone.now().year
+#             queryset = queryset.filter(
+#                 created_on__month=current_month, created_on__year=current_year)
 
-        # if pending_pyment or pos_on_demo:
-        #     operator_invoice = OperatorInvoice.objects.filter(is_visible=True)
-        #     paid_invoice = operator_invoice.filter(is_paid=True).aggregate(total_amount=Sum('payable_amount_with_gst'))['total_amount'] or 0
-        #     if paid_invoice == 0:
-        #         if pos_on_demo:
-        #             operator_ids = operator_invoice.filter(is_paid=True).values_list('operator', flat=True)
-        #             queryset = queryset.filter(is_pos_connected = True).exclude(operator__in=operator_ids)
+#         # if pending_pyment or pos_on_demo:
+#         #     operator_invoice = OperatorInvoice.objects.filter(is_visible=True)
+#         #     paid_invoice = operator_invoice.filter(is_paid=True).aggregate(total_amount=Sum('payable_amount_with_gst'))['total_amount'] or 0
+#         #     if paid_invoice == 0:
+#         #         if pos_on_demo:
+#         #             operator_ids = operator_invoice.filter(is_paid=True).values_list('operator', flat=True)
+#         #             queryset = queryset.filter(is_pos_connected = True).exclude(operator__in=operator_ids)
 
-        #     unpaid_invoice = operator_invoice.filter(is_paid=False)
-        #     amount = unpaid_invoice.aggregate(total_amount=Sum('payable_amount_with_gst'))['total_amount'] or 0
-        #     if amount >= 1:
-        #         if pending_pyment:
-        #             operator_ids = unpaid_invoice.values_list('operator', flat=True)
-        #             queryset = queryset.filter(operator__in=operator_ids)
+#         #     unpaid_invoice = operator_invoice.filter(is_paid=False)
+#         #     amount = unpaid_invoice.aggregate(total_amount=Sum('payable_amount_with_gst'))['total_amount'] or 0
+#         #     if amount >= 1:
+#         #         if pending_pyment:
+#         #             operator_ids = unpaid_invoice.values_list('operator', flat=True)
+#         #             queryset = queryset.filter(operator__in=operator_ids)
 
-        # if pending_pyment:
-        #     operator_ids = OperatorInvoice.objects.filter(is_visible=True, is_paid=False).values_list('operator', flat=True)
-        #     queryset = queryset.filter(operator__in=operator_ids)
+#         # if pending_pyment:
+#         #     operator_ids = OperatorInvoice.objects.filter(is_visible=True, is_paid=False).values_list('operator', flat=True)
+#         #     queryset = queryset.filter(operator__in=operator_ids)
 
-        # if pos_on_demo:
-        #     operator_ids = OperatorInvoice.objects.filter(is_visible=True, is_paid=True).values_list('operator', flat=True)
-        #     queryset = queryset.exclude(operator__in=operator_ids)
+#         # if pos_on_demo:
+#         #     operator_ids = OperatorInvoice.objects.filter(is_visible=True, is_paid=True).values_list('operator', flat=True)
+#         #     queryset = queryset.exclude(operator__in=operator_ids)
 
-        data = self.get_serializer(queryset, many=True).data
-        # sort the data by payment_pending and booking_status
-        return send_response(status=status.HTTP_200_OK, developer_message='Request was successful.',
-                             data=data)
+#         data = self.get_serializer(queryset, many=True).data
+#         # sort the data by payment_pending and booking_status
+#         return send_response(status=status.HTTP_200_OK, developer_message='Request was successful.',
+#                              data=data)
