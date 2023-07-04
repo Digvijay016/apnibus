@@ -1,7 +1,8 @@
 import uuid
 from django.db import models
-from utils.models import TimeStampedModel
 from route.models.route_town import RouteTown
+from utils.models import TimeStampedModel
+# from route.models.route_town import RouteTown
 from route.models.town_stoppage import TownStoppage
 from simple_history.models import HistoricalRecords
 

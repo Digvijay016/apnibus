@@ -65,122 +65,89 @@ class BusRouteTown(TimeStampedModel):
     @staticmethod
     @receiver(pre_save, sender='bus.BusRouteTown')
     def pre_save_callback(sender, instance, **kwargs):
-        # if created:
 
-        #     instance.save()
-        # bus_route_town_stoppages = instance.get_bus_route_town_stoppages()
-        # print("################", bus_route_town_stoppages)
-        print("################ 1 ", instance.route)
-        queryset = RouteTown.objects.filter(route=instance.route)
-        uuid_town_id_list = [
-            str(uuid) for uuid in queryset.values_list('town', flat=True)]
+        print(instance)
 
-        # town_stoppage_list = RouteTownStoppage.objects.values_list('town_stoppage', flat=True)
+        # # print("################ 1 ", instance.route)
+        # queryset = RouteTown.objects.filter(route=instance.route)
+        # uuid_town_id_list = [
+        #     str(uuid) for uuid in queryset.values_list('town', flat=True)]
 
-        route_town_ids_list = [
-            str(uuid) for uuid in queryset.values_list('id', flat=True)]
+        # route_town_ids_list = [
+        #     str(uuid) for uuid in queryset.values_list('id', flat=True)]
 
-        print("############## 2 ", route_town_ids_list)
+        # # print("############## 2 ", route_town_ids_list)
 
-        route_town_stoppage_list_qs = []
+        # route_town_stoppage_list_qs = []
 
-        missing_town_names = []
+        # missing_town_names = []
 
-        missing_town_qs = RouteMissingTown.objects.filter(route=instance.route)
+        # missing_town_qs = RouteMissingTown.objects.filter(route=instance.route)
 
-        missing_town_names = [
-            str(name) for name in missing_town_qs.values_list('missing_town', flat=True)]
+        # missing_town_names = [
+        #     str(name) for name in missing_town_qs.values_list('missing_town', flat=True)]
 
-        print("Missing town names ###########", missing_town_names)
+        # # print("Missing town names ###########", missing_town_names)
 
-        instance.missing_towns = missing_town_names
+        # instance.missing_towns = missing_town_names
 
-        for route_town_id in route_town_ids_list:
-            query_set = RouteTownStoppage.objects.filter(
-                route_town=route_town_id)
-            # print("########### 3 ", query_set)
-            if query_set:
-                qs = query_set.values_list('town_stoppage', flat=True).order_by('duration')
-                route_town_stoppage_list_qs.append(qs)
+        # for route_town_id in route_town_ids_list:
+        #     query_set = RouteTownStoppage.objects.filter(
+        #         route_town=route_town_id)
 
-        print("########### 3 ", route_town_stoppage_list_qs)
+        #     if query_set:
+        #         qs = query_set.values_list('town_stoppage', flat=True).order_by('duration')
+        #         route_town_stoppage_list_qs.append(qs)
 
-        route_town_stoppage_list = [
-            str(uuid) for uuid in route_town_stoppage_list_qs[0].values_list('town_stoppage', flat=True)]
+        # # print("########### 3 ", route_town_stoppage_list_qs)
 
-        print("############## 4 ", route_town_stoppage_list)
+        # route_town_stoppage_list = [
+        #     str(uuid) for uuid in route_town_stoppage_list_qs[0].values_list('town_stoppage', flat=True)]
 
-        town_stoppage_dict = {}
-        town_stoppage_list = []
-        for stoppage_id in route_town_stoppage_list:
-            stoppage_name = TownStoppage.objects.filter(
-                id=stoppage_id).values_list('name', flat=True).first()
-            stoppage_town_id = TownStoppage.objects.filter(
-                id=stoppage_id).values_list('town', flat=True).first()
+        # # print("############## 4 ", route_town_stoppage_list)
 
-            # uuid_obj = uuid.UUID(stoppage_town_id)
-            uuid_str = str(stoppage_town_id)
+        # town_stoppage_dict = {}
+        # town_stoppage_list = []
+        # for stoppage_id in route_town_stoppage_list:
+        #     stoppage_name = TownStoppage.objects.filter(
+        #         id=stoppage_id).values_list('name', flat=True).first()
+        #     stoppage_town_id = TownStoppage.objects.filter(
+        #         id=stoppage_id).values_list('town', flat=True).first()
 
-            town_stoppage_dict = {
-                'stoppage_id': stoppage_id,
-                'stoppage_name': stoppage_name,
-                'town_id': uuid_str
-            }
+        #     uuid_str = str(stoppage_town_id)
 
-            town_stoppage_list.append(town_stoppage_dict)
+        #     town_stoppage_dict = {
+        #         'stoppage_id': stoppage_id,
+        #         'stoppage_name': stoppage_name,
+        #         'town_id': uuid_str
+        #     }
 
-            print('############## 6 ', town_stoppage_dict)
+        #     town_stoppage_list.append(town_stoppage_dict)
 
-        town_stoppage_list.append(town_stoppage_dict)
-        print('############## 7 ', town_stoppage_list)
+        #     # print('############## 6 ', town_stoppage_dict)
 
-        for town_id in uuid_town_id_list:
-            if town_id:
-                name = Town.objects.filter(id=town_id).values_list(
-                    'name', flat=True).first()
+        # town_stoppage_list.append(town_stoppage_dict)
+        # # print('############## 7 ', town_stoppage_list)
 
-                # duration = Town.objects.filter(id=town_id).values_list(
-                #     'duration', flat=True).first()
+        # for town_id in uuid_town_id_list:
+        #     if town_id:
+        #         name = Town.objects.filter(id=town_id).values_list(
+        #             'name', flat=True).first()
 
-                duration = None
+        #         duration = None
 
-                # boarding_points = []
+        #         stoppage_list = []
 
-                # town_stoppage_qs = RouteTownStoppage.objects.filter(town_stoppage=town_id).values_list(
-                #     'town', flat=True)
+        #         for stoppage in town_stoppage_list:
+        #             if stoppage.get("town_id") == town_id:
+        #                 stoppage_dct = {
+        #                     "stoppage_id": stoppage.get("stoppage_id"),
+        #                     "stoppage_name": stoppage.get("stoppage_name"),
+        #                     "town_stoppage_status": instance.town_stoppage_status
+        #                 }
+        #                 stoppage_list.append(stoppage_dct)
 
-                # uuid_town_stoppage_id_list = [
-                #     str(uuid) for uuid in town_stoppage_list.values_list('town_stoppage', flat=True)]
+        #         town_dict = {"town_id": town_id,
+        #                      "town_name": name, "duration":duration ,"town_status": instance.town_status, "stoppage": stoppage_list}  # , "via":via}
 
-                # for town_stoppage_id in uuid_town_stoppage_id_list:
-                #     name = RouteTownStoppage.objects.filter(town=town_id).values_list(
-                #         'name', flat=True).first()
-
-                #     if name:
-                #         boarding = {
-                #             "town_stoppage_id": town_stoppage_id, "boarding_name": name}
-                #         boarding_points.append(boarding)
-
-                stoppage_list = []
-
-                for stoppage in town_stoppage_list:
-                    if stoppage.get("town_id") == town_id:
-                        stoppage_dct = {
-                            "stoppage_id": stoppage.get("stoppage_id"),
-                            "stoppage_name": stoppage.get("stoppage_name"),
-                            # "town_id": stoppage.get("town_id"),
-                            "town_stoppage_status": instance.town_stoppage_status
-                        }
-                        stoppage_list.append(stoppage_dct)
-
-                town_dict = {"town_id": town_id,
-                             "town_name": name, "duration":duration ,"town_status": instance.town_status, "stoppage": stoppage_list}  # , "via":via}
-
-                # town_dict['stoppage'] = town_stoppage_list
-                instance.towns.append(town_dict)
-
-    # def get_bus_route_town_stoppages(self, obj):
-    #     qs = BusRouteTownStoppage.objects.filter(
-    #         bus_route_town=obj).order_by('duration')
-    #     data = BusRouteTownStoppageResponseSerializer(qs, many=True).data
-    #     return data
+        #         instance.towns.append(town_dict)

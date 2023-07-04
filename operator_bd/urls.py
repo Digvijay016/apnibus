@@ -27,6 +27,7 @@ from bus.views.bus import CreateBusView
 from bus.views.bus_route import CreateBusRouteView
 from bus.views.bus_route_return import BusRouteReturnView
 from bus.views.bus_route_town import CreateBusRouteTownView
+from bus.views.bus_routes_towns import CreateBusRoutesTownsView
 from bus.views.town_search import CreateTownSearchView
 from pricing.views.price import CreatePriceView
 from route.views.district import CreateDistrictView
@@ -90,6 +91,7 @@ router.register(r'district', CreateDistrictView)
 router.register(r'states', CreateStateView)
 router.register(r'town_stoppage', CreateTownStoppageView)
 router.register(r'route', CreateRouteView)
+router.register(r'route_town_generic', CreateBusRoutesTownsView)
 router.register(r'route_town', CreateRouteTownView)
 router.register(r'route_town_stoppage', CreateRouteTownStoppageView)
 router.register(r'route_return', BusRouteReturnView)
