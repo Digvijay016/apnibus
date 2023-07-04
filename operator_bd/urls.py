@@ -28,7 +28,6 @@ from bus.views.bus_route import CreateBusRouteView
 from bus.views.bus_route_return import BusRouteReturnView
 from bus.views.bus_route_town import CreateBusRouteTownView
 from bus.views.bus_routes_towns import CreateBusRoutesTownsView
-from bus.views.town_search import CreateTownSearchView
 from pricing.views.price import CreatePriceView
 from route.views.district import CreateDistrictView
 from route.views.route import CreateRouteView
