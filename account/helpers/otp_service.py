@@ -1,5 +1,6 @@
 from utils.sms_service import SMSService
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 from account.models.user_authentication import UserAuthenticationOTP
 from account.serializers.otp_serializer import OTPGenerationSerializer, UserOTPGenerationSerializer
 
@@ -60,7 +61,9 @@ class OTPService():
     @classmethod
     def check_validity(cls, instance):
         validity_period = timedelta(minutes=5)
-        if datetime.now() - instance.created_on < validity_period:
+        now = timezone.now()
+        if now - instance.created_on < validity_period:
+        #if datetime.now() - instance.created_on < validity_period:
             return True
         else:
             instance.is_valid = False

@@ -1,13 +1,14 @@
 import uuid
 from django.db import models
 from .user import User
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from utils.models import TimeStampedModel
 from django.contrib.auth.models import AbstractUser
 from simple_history.models import HistoricalRecords
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
-
+from django.utils.translation import gettext_lazy as _
 
 class SalesTeamUser(AbstractUser, TimeStampedModel):
 
@@ -17,6 +18,24 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
     TYPE = (
         (SALES, 'sales'),
         (MARKETING, 'marketing'),
+    )
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        help_text=_('The groups this user belongs to.'),
+        related_name='sales_team_users',  # add a unique related_name
+        related_query_name='sales_team_user'
+    )
+
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('user permissions'),
+        blank=True,
+        help_text=_('Specific permissions for this user.'),
+        related_name='sales_team_users',  # add a unique related_name
+        related_query_name='sales_team_user'
     )
 
     def save(self, *args, **kwargs):
@@ -29,7 +48,7 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='internal_team_user', null=True)
+        User, on_delete=models.CASCADE, related_name='sales_team_user_FK', null=True)
     name = models.CharField(max_length=50, null=True)
     mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True)

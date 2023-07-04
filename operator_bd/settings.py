@@ -25,10 +25,11 @@ SECRET_KEY = 'django-insecure-s#g+qwvlp3c)^ippr=_3a1)w59vzkngzoq*s+cmvepvj=--(!n
 ENVIRONMENT = 'local'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+AUTH_USER_MODEL = 'account.User'
+TIME_ZONE =  'Asia/Kolkata'
 
 # Application definition
 
