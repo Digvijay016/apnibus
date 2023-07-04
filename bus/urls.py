@@ -1,28 +1,11 @@
 from django.urls import path
 from bus.models.bus_route_return import BusRouteReturn
 
-# from account.views.operator import CreateOperatorView
-# from bus.views.bus_via_route_pricing import AutoFillBusViaRoutePricing
 from bus.views.bus import BusListView, CreateBusView
 from bus.views.bus_route import BusRouteListView, CreateBusRouteView
 from bus.views.bus_route_return import BusRouteListReturnView, CreateBusRouteReturnView
 from bus.views.bus_route_town import BusRouteTownListView, CreateBusRouteTownView, UpdateBusRouteTownView
 from bus.views.bus_route_town_stoppage import BusRouteTownStoppageListView, BusUpdateRouteTownStoppageView, CreateBusRouteTownStoppageView
-# CreateBusRouteView, BusRouteListView,
-# \
-# CreateBusRouteTownView, BusRouteTownListView, CreateBusRouteTownStoppageView, BusRouteTownStoppageListView, \
-# BusUpdateView, BusRetrieveView, CreateBusViaRouteView, BusViaRoutePricingListView, UpdateBusViaRoutePricingView, \
-# UpdateBusRouteTownView, BusViaRouteListView, BusUpdateRouteTownStoppageView, BusRouteTownMappingView, BusSearchView, \
-# UpdateBusRouteView, BusViaRouteUpdateView, BusRouteSearchView, BusDetailView, ExtendBusRouteJourneys, \
-# AppVersionView, \
-# AddUserDeviceView, LiveBusAddaTimeView, DeleteBusRouteView, BusRouteJourneyListView, BusRouteJourneyUpdateView, \
-# DeleteBusView, ConductorViaRoutePricingListView, OperatorBusListView, OperatorCurrentTripDetailView, \
-# OperatorAllTripDetailsView, OperatorProfileView, CommuterPricingExportView, CommuterPricingUpdateView, \
-# BusRouteSearchAdminView, DeleteWrongJourneys, ExportBusViaRoutePricing, UploadCommuterBusViaRoutePricing, \
-# UploadConductorBusViaRoutePricing, BusRouteSearchViewV2, OperatorBusListViewV2, \
-# OperatorBusRouteJourneyTripHisabView, OperatorTicketDetailView, OperatorOnlineBookingView, \
-# OperatorBusesActivityView, OperatorBusListDataView, BusActivityView, BusCommissionListView, BusCommissionUpdateView, \
-# BusActivityViewV2, BusRouteSearchViewV3, BusRouteSearchViewV4
 
 urlpatterns = [
     path('create', CreateBusView.as_view(), name='create_bus_view'),

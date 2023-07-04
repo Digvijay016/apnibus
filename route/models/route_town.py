@@ -33,4 +33,4 @@ class RouteTown(TimeStampedModel):
         ]
 
     def __str__(self):
-        return str(self.route) + "->" + self.town.name
+        return f"{self.route} + -> + {self.town.name}"

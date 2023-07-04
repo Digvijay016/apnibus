@@ -152,7 +152,8 @@ AUTH_USER_MODEL = 'account.User'
 
 # Environment
 ENVIRONMENT = "local"
-SERVER_URL = "http://127.0.0.1:8000"
+# SERVER_URL = "http://127.0.0.1:8000"
+SERVER_URL = "http://13.126.0.170:8000"
 
 # Slack token
 SLACK_TOKEN = "xoxb-2597034669908-2884874866868-jXEORWuz6pit4AT97EpNwQ8R"

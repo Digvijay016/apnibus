@@ -1,7 +1,7 @@
 from django.urls import path, include
 from account.views.aws_s3 import UploadAssetsToS3View
 from account.views.sales_team import UserAuthOTPViewset
-from operator_bd.urls import router
+from account.urls import router
 # from account.views.operator import CreateOperatorView, OperatorListView, OperatorUpdateView, OperatorRetrieveView, OperatorSearchView, OperatorUserAuthOTPViewset
 # from route.views.route import CreateRouteView
 

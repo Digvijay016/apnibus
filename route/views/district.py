@@ -8,5 +8,7 @@ from route.serializers.district import DistrictSerializer
 
 
 class CreateDistrictView(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     queryset = District.objects.all()
     serializer_class = DistrictSerializer

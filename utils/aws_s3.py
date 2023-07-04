@@ -20,7 +20,13 @@ class UploadFiles:
         # print(resp)
 
     def get_file_link(self, file_name, folder_name):
-        file_name = file_name.replace(" ", "T")#.replace(":", "%3A")
+        file_name = file_name.replace(" ", "T")  # .replace(":", "%3A")
         file_link = self.base_url + folder_name + "/" + file_name
         # print("$$$$$$$$$$$$$$$$$$ ", file_name)
         return file_link
+
+    def get_ec2_instance_ip(instance_id):
+        ec2 = boto3.resource('ec2')
+        instance = ec2.Instance(instance_id)
+        ip_address = instance.public_ip_address
+        return ip_address

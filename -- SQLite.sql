@@ -109,8 +109,33 @@ ALTER TABLE bus_historicalbusroute ADD COLUMN via TEXT;
 ALTER TABLE bus_busroutetownstoppage ADD COLUMN calculated_duration INTEGER;
 ALTER TABLE bus_busroutetown ADD COLUMN missing_towns TEXT;
 ALTER TABLE bus_historicalbusroutetown ADD COLUMN missing_towns TEXT;
-PRAGMA table_info(route_historicalroutetown);
+PRAGMA table_info(route_routemissingtown);
 
+DELETE FROM account_user;
+DELETE FROM account_salesteamuser;
+DELETE FROM authtoken_token;
+DELETE FROM account_operator;
+DELETE FROM bus_bus;
+DELETE FROM bus_busroutereturn;
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN password TEXT; 
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN last_login datetime;
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN is_superuser bool;
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN username varchar(150);
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN first_name varchar(150);
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN last_name varchar(150);
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN email varchar(254);
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN is_staff bool;
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN date_joined datetime;
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN user_type varchar(25);
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN preferred_language varchar(255);
+ALTER TABLE account_historicalsalesteamuser ADD COLUMN is_active bool;
+find . -type d -name '__pycache__' -exec rm -rf {} +
+
+INSERT INTO account_salesteamuser (password, last_login, is_superuser, username, first_name, last_name, email, is_staff, date_joined, user_type, preferred_language, is_active)
+SELECT password, last_login, is_superuser, username, first_name, last_name, email, is_staff, date_joined, user_type, preferred_language, is_active
+FROM account_user;
+
+DELETE FROM account_salesteamuser LIMIT 10;
 
 Create Table route_routemissingtown(
     created_on DATETIME NOT NULL DEFAULT NULL,
@@ -152,6 +177,7 @@ CREATE TABLE temp_table (
 INSERT INTO temp_table SELECT * FROM route_historicalroutemissingtown;
 
 DROP TABLE route_historicalroutemissingtown;
+DROP TABLE route_routemissingtown;
 
 -- Step 4: Rename the temporary table to the original table name
 ALTER TABLE temp_table RENAME TO route_historicalroutemissingtown;
@@ -162,3 +188,34 @@ find . -type d -name 'migrations' -exec rm -rf {} +
 
 
 ALTER TABLE route_historicalroutemissingtown ALTER COLUMN history_id DROP NOT NULL;
+
+ALTER TABLE route_routemissingtown ADD COLUMN town_id varchar(25);
+
+ALTER TABLE route_routemissingtown ADD CONSTRAINT fk_routemissingtown_town FOREIGN KEY (town_id) REFERENCES Town(id)ON DELETE CASCADE;
+
+ALTER TABLE route_routemissingtown ADD COLUMN town_id varchar(25) REFERENCES route_town(id) ON DELETE CASCADE;
+ALTER TABLE route_historicalroutemissingtown ADD COLUMN town_id varchar(25) REFERENCES route_town(id) ON DELETE CASCADE;
+ALTER TABLE route_routemissingtown DROP COLUMN town_id;
+ALTER TABLE route_historicalroutemissingtown DROP COLUMN town_id;
+
+
+DELETE FROM route_routemissingtown LIMIT 20;
+DELETE FROM account_historicaloperator where history_user_id='dc6a158e18b211ee99e17e44607f8f04';
+
+alter table route_routemissingtown drop constraint route_id;
+ALTER TABLE route_routemissingtown DROP COLUMN route_id;
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = route_routemissingtown;
+
+.schema route_routemissingtown;
+select * from sqlite_master where type='table' and name='route_historicalroutemissingtown';
+
+CREATE TABLE "route_historicalroutemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
+CREATE TABLE "route_routemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
+
+CREATE TABLE "bus_townsearch" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "towns" Text);
+CREATE TABLE "bus_historicaltownsearch" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "towns" Text);
+
+DROP TABLE bus_townsearch;
+DROP TABLE bus_historicaltownsearch;
+-- CREATE TABLE "bus_townsearch" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "town_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "towns" Text);

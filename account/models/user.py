@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Permission, Group
 from utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
@@ -16,6 +16,7 @@ class User(AbstractUser, TimeStampedModel):
     POS_DEVICE = 'pos_device'
     CONDUCTOR_SE = 'conductor_se'
     OPERATOR_SALES_LEAD = 'operator_sales_lead'
+    SALES = 'Sales'
 
     USER_TYPE = (
         (ADMIN, 'admin'),
@@ -26,7 +27,8 @@ class User(AbstractUser, TimeStampedModel):
         (BUS_DRIVER, 'bus_driver'),
         (POS_DEVICE, 'pos_device'),
         (CONDUCTOR_SE, 'conductor_se'),
-        (OPERATOR_SALES_LEAD, 'operator_sales_lead')
+        (OPERATOR_SALES_LEAD, 'operator_sales_lead'),
+        (SALES, 'Sales')
     )
 
     ENGLISH = "english"
@@ -35,6 +37,22 @@ class User(AbstractUser, TimeStampedModel):
     PREFERRED_LANGUAGES = (
         (ENGLISH, 'english'),
         (HINDI, 'hindi'),
+    )
+
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for the user.',
+        related_name='user_permissions_user'  # Add a unique related_name
+    )
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        related_name='user_groups'  # Add a unique related_name
     )
 
     class Meta:

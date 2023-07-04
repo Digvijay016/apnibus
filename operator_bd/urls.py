@@ -27,6 +27,7 @@ from bus.views.bus import CreateBusView
 from bus.views.bus_route import CreateBusRouteView
 from bus.views.bus_route_return import BusRouteReturnView
 from bus.views.bus_route_town import CreateBusRouteTownView
+from bus.views.town_search import CreateTownSearchView
 from pricing.views.price import CreatePriceView
 from route.views.district import CreateDistrictView
 from route.views.route import CreateRouteView
@@ -93,7 +94,10 @@ router.register(r'route_town', CreateRouteTownView)
 router.register(r'route_town_stoppage', CreateRouteTownStoppageView)
 router.register(r'route_return', BusRouteReturnView)
 router.register(r'missing_town', RouteMissingTownView)
-# router.register(r'sales_team/otp', UserAuthOTPViewset)
+router.register(r'town_search', CreateTownSearchView)
+router.register(r'sales_team/otp', UserAuthOTPViewset)
+router.register(r'sales_team/resend/otp', UserAuthOTPViewset)
+# router.register(r'sales_team/verify', UserAuthOTPViewset)
 router.register(r'sales_team', CreateSalesUser, basename="create-sales-user")
 # router.register(r'routes', CreateRouteView)
 

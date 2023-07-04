@@ -21,9 +21,6 @@ class BusRoute(TimeStampedModel):
     arrival_time = models.TimeField(default='00:00:00')
     route = models.JSONField(default=list, null=True)
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, null=True)
-    # via = models.JSONField(default=list, null=True)
-    # route = models.ForeignKey(Route, on_delete=models.CASCADE, null=True)
-    # name = models.CharField(max_length=255, null=True)
     history = HistoricalRecords()
 
     def __str__(self):

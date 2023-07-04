@@ -15,6 +15,7 @@ from operator_bd.urls import router
 # router.register("commuter/profile", CommuterProfileViewset)
 # router.register("conductor/otp", BusDriverOTPViewset)
 router.register("sales_app/otp", UserAuthOTPViewset)
+router.register("sales_app/otp/verify", UserAuthOTPViewset)
 
 urlpatterns = [
 # path('/', CreateOperatorView.as_view(), name='create_operator_view')
@@ -27,5 +28,3 @@ urlpatterns = [
 # path('upload/assets', UploadAssetsToS3View.as_view(), name="upload_assets"),
 # path('', include(router.urls)),
 ]   #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-urlpatterns += router.urls
