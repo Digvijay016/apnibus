@@ -29,10 +29,10 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='internal_team_user', null=True)
-    name = models.CharField(max_length=50, null=True)
+        User, on_delete=models.CASCADE, related_name='sales_team_user_FK', null=True, blank=True)
+    name = models.CharField(max_length=50, null=True, blank=True)
     mobile = models.CharField(max_length=10)
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True, blank=True)
     type = models.CharField(max_length=255, choices=TYPE, default=SALES)
     history = HistoricalRecords()
 

@@ -103,7 +103,7 @@ class CreateOperatorView(viewsets.ModelViewSet):
     serializer_class = OperatorSerializer
 
     http_method_names = ['get', 'post', 'put', 'delete']
-    lookup_field = 'mobile'
+    # lookup_field = 'mobile'
 
     # def get_queryset(self):
     #     queryset = super().get_queryset()
