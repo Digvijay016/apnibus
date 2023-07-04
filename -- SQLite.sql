@@ -199,7 +199,7 @@ ALTER TABLE route_routemissingtown DROP COLUMN town_id;
 ALTER TABLE route_historicalroutemissingtown DROP COLUMN town_id;
 
 
-DELETE FROM route_routemissingtown LIMIT 20;
+DELETE FROM bus_townsearch LIMIT 500;
 DELETE FROM account_historicaloperator where history_user_id='dc6a158e18b211ee99e17e44607f8f04';
 
 alter table route_routemissingtown drop constraint route_id;
@@ -220,5 +220,9 @@ DROP TABLE bus_townsearch;
 DROP TABLE bus_historicaltownsearch;
 -- CREATE TABLE "bus_townsearch" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "town_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "towns" Text);
 
-CREATE TABLE "bus_busroutestowns" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "duration" integer NULL, "calculated_duration" integer NULL, "day" integer NULL, "eta_status" varchar(20) NOT NULL, "towns" text NULL CHECK ((JSON_VALID("towns") OR "towns" IS NULL)), "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, town_status VARCHAR(20) DEFAULT 'active', town_stoppage_status VARCHAR(20) DEFAULT 'active')
-CREATE TABLE "bus_historicalbusroutestowns" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "duration" integer NULL, "calculated_duration" integer NULL, "day" integer NULL, "eta_status" varchar(20) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "towns" text NULL CHECK ((JSON_VALID("towns") OR "towns" IS NULL)), "route_id" char(32) NULL, town_status VARCHAR(20) DEFAULT 'active', town_stoppage_status VARCHAR(20) DEFAULT 'active')
+CREATE TABLE "bus_townsearch" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "town_id" char(32) NULL REFERENCES "route_town" ("id") DEFERRABLE INITIALLY DEFERRED, "district_id" char(32) NULL REFERENCES "route_district" ("id") DEFERRABLE INITIALLY DEFERRED , town_name varchar(255), district_name varchar(255))
+CREATE TABLE "bus_historicaltownsearch" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "town_id" char(32) NULL REFERENCES "route_town" ("id") DEFERRABLE INITIALLY DEFERRED, "district_id" char(32) NULL REFERENCES "route_district" ("id") DEFERRABLE INITIALLY DEFERRED , town_name varchar(255), district_name varchar(255))
+ALTER TABLE bus_townsearch ADD COLUMN town_name varchar(255);
+ALTER TABLE bus_townsearch ADD COLUMN district_name varchar(255);
+ALTER TABLE bus_historicaltownsearch ADD COLUMN town_name varchar(255);
+ALTER TABLE bus_historicaltownsearch ADD COLUMN district_name varchar(255);
