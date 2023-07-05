@@ -50,8 +50,9 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='sales_team_user_FK', null=True)
     name = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=50, null=True, blank=True)
     mobile = models.CharField(max_length=10)
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True, blank=True)
     type = models.CharField(max_length=255, choices=TYPE, default=SALES)
     history = HistoricalRecords()
 
