@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 
+
 class SalesTeamUser(AbstractUser, TimeStampedModel):
 
     SALES = 'sales'
@@ -48,11 +49,11 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='sales_team_user_FK', null=True)
-    name = models.CharField(max_length=50, null=True)
-    name = models.CharField(max_length=50, null=True, blank=True)
+        User, on_delete=models.CASCADE, related_name='sales_team_user_FK', blank=True)
+    name = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=50, blank=True)
     mobile = models.CharField(max_length=10)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(blank=True)
     type = models.CharField(max_length=255, choices=TYPE, default=SALES)
     history = HistoricalRecords()
 

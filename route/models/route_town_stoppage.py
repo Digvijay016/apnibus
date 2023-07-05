@@ -22,10 +22,10 @@ class RouteTownStoppage(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     route_town = models.ForeignKey(
-        RouteTown, on_delete=models.CASCADE, null=True)
+        RouteTown, on_delete=models.CASCADE, blank=True)
     town_stoppage = models.ForeignKey(
-        TownStoppage, on_delete=models.PROTECT, null=True)
-    duration = models.IntegerField(null=True)
+        TownStoppage, on_delete=models.PROTECT, blank=True)
+    duration = models.IntegerField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS, default=ACTIVE)
     history = HistoricalRecords()
 

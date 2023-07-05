@@ -34,11 +34,11 @@ class BusRouteReturn(TimeStampedModel):
     to_town = models.CharField(max_length=255, default='to town')
     start_time = models.TimeField(default='00:00:00')
     arrival_time = models.TimeField(default='00:00:00')
-    route = models.CharField(max_length=255, null=True)
+    route = models.CharField(max_length=255, blank=True)
     days = models.CharField(max_length=100, default='', choices=RETURNCHOICES)
     another_trip = models.CharField(
         max_length=100, default='', choices=ANOTHERTRIP)
-    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, null=True)
+    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, blank=True)
     history = HistoricalRecords()
 
     @staticmethod
