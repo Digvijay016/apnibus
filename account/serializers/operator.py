@@ -12,7 +12,7 @@ class OperatorSerializer(DynamicFieldsModelSerializer):
         model = Operator
         fields = ('id', 'name', 'company_name', 'mobile', 'bus_count' ,'town', 'address', 'gstin', 'aadhar_number',
                   'aadhar_front_photo', 'aadhar_back_photo', 'pan_number', 'pan_photo', 'status',
-                 'setup_fee', 'monthly_subscription_fee', 'pos_given_as')
+                 'setup_fee', 'monthly_subscription_fee', 'pos_given_as','rejection_reason')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -9,7 +9,7 @@ class BusSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Bus
         fields = ('id', 'bus_number', 'operator', 'pos_serial_no',
-                  'pos_dsn_number', 'gps_sim_image')
+                  'pos_dsn_number', 'gps_sim_image')#,'from_town','to_town','start_time','arrival_time','via')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

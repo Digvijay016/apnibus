@@ -3,6 +3,7 @@ from django.db import models
 from account.models.operators import Operator
 from account.views.aws_s3 import UploadAssetsToS3View
 from utils.models import TimeStampedModel
+from route.models.town import Town
 from account.models.operators import Operator
 from simple_history.models import HistoricalRecords
 from django.db.models.signals import post_save
@@ -14,6 +15,13 @@ class Bus(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     operator = models.ForeignKey(
         Operator, on_delete=models.CASCADE, blank=True)
+    # from_town = models.ForeignKey(
+    #     Town, on_delete=models.CASCADE, blank=True)
+    # to_town = models.ForeignKey(
+    #     Town, on_delete=models.CASCADE, blank=True)
+    # start_time = models.TimeField(default='00:00:00')
+    # arrival_time = models.TimeField(default='00:00:00')
+    # via = models.CharField(max_length=255, blank=True)
     bus_number = models.CharField(max_length=255, unique=True, blank=True)
     pos_serial_no = models.ImageField(max_length=255, blank=True)
     pos_dsn_number = models.CharField(max_length=255, blank=True)

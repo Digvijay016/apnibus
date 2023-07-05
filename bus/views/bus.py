@@ -20,6 +20,7 @@ class CreateBusView(viewsets.ModelViewSet):
     serializer_class = BusSerializer
 
     http_method_names = ['get', 'post', 'put', 'delete']
+    lookup_field = 'operator'
 
     # def create(self, request):
     #     mobile_number = request.data.get('mobile')

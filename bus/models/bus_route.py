@@ -1,4 +1,4 @@
-from django.utils import timezone
+# from django.utils import timezone
 import uuid
 from django.db import models
 from route.models.route_town import RouteTown
@@ -15,16 +15,18 @@ class BusRoute(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     # bus_number = models.CharField(max_length=255, unique=True, default='APNI_BUS')
-    from_town = models.CharField(max_length=255, default='from town')
-    to_town = models.CharField(max_length=255, default='to town')
+    from_town = models.ForeignKey(Town, on_delete=models.CASCADE, blank=True, related_name='bus_route_from_town_FK')
+    to_town = models.ForeignKey(Town, on_delete=models.CASCADE, blank=True, related_name='bus_route_to_town_FK')
     start_time = models.TimeField(default='00:00:00')
     arrival_time = models.TimeField(default='00:00:00')
     route = models.JSONField(default=list, blank=True)
+    towns = models.JSONField(default=list, blank=True)
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, blank=True)
+    return_id = models.CharField(max_length=255, default='', blank=True)
     history = HistoricalRecords()
 
-    def __str__(self):
-        return str(self.bus.number) + " --> " + str(self.from_town) + str(self.to_town) + str(self.departure_time) + str(self.arrival_time)
+    # def __str__(self):
+    #     return str(self.bus.number) + " --> " + str(self.from_town) + str(self.to_town) + str(self.departure_time) + str(self.arrival_time)
 
     def __str__(self):
         return str(self.id)
@@ -33,18 +35,21 @@ class BusRoute(TimeStampedModel):
     @receiver(post_save, sender='bus.BusRoute')
     def post_save_callback(sender, instance, created, **kwargs):
         if created:
-            # Perform operations after creating a new instance
-            # from_town_id = Town.objects.filter(name=instance.from_town).values_list('id', flat=True)
-            # to_town_id = Town.objects.filter(name=instance.to_town).values_list('id', flat=True)
-
-            queryset_from_town = Town.objects.filter(name=instance.from_town)
+            print("######################## Return Id",instance.return_id)
+            if instance.return_id:
+                qs = BusRoute.objects.filter(id=instance.return_id)
+                instance.from_town_id = qs.values_list('to_town', flat=True).first()
+                instance.to_town_id = qs.values_list('from_town', flat=True).first()
+            
+            print("######################## Return Id",instance.return_id)
+            queryset_from_town = Town.objects.filter(id=instance.from_town_id)
             uuid_route_from_town_id_list = [
                 str(uuid) for uuid in queryset_from_town.values_list('id', flat=True)]
 
-            queryset_to_town = Town.objects.filter(name=instance.to_town)
+            queryset_to_town = Town.objects.filter(id=instance.to_town_id)
             uuid_route_to_town_id_list = [
                 str(uuid) for uuid in queryset_to_town.values_list('id', flat=True)]
-            # route [ {"route_id":"","route_name":"","via":""} ]
+
             print("############## from town id", uuid_route_from_town_id_list)
             print("############## to town id", uuid_route_to_town_id_list)
 

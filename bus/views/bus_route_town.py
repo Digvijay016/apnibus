@@ -3,6 +3,7 @@ from bus.models.bus import Bus
 from django.http import JsonResponse
 from bus.models.bus_route_town import BusRouteTown
 from bus.models.bus_routes_towns import BusRoutesTowns
+from bus.models.bus_route_missing_town import BusRouteMissingTown
 from bus.serializers.bus_route_town import BusRouteTownSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -50,6 +51,9 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
 
             if town_stoppage_id == townStoppageId:
                 town['town_stoppage_status'] = town_stoppage_status
+
+        # missing_towns_qs = BusRouteMissingTown.objects.all()
+        
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
