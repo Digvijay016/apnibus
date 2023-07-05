@@ -16,10 +16,10 @@ class District(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     name = models.CharField(max_length=255)
-    state = models.ForeignKey(State, on_delete=models.CASCADE, null=True, blank=True)
-    pincode = models.CharField(max_length=255, null=True, blank=True)
-    short_name = models.CharField(max_length=255, null=True, blank=True)
-    hindi_name = models.CharField(max_length=255, null=True, blank=True)
+    state = models.ForeignKey(State, on_delete=models.CASCADE, blank=True)
+    pincode = models.CharField(max_length=255, blank=True)
+    short_name = models.CharField(max_length=255, blank=True)
+    hindi_name = models.CharField(max_length=255, blank=True)
     status = models.CharField(max_length=20, choices=STATUS, default=ACTIVE)
     history = HistoricalRecords()
 
@@ -31,17 +31,18 @@ class District(TimeStampedModel):
         verbose_name_plural = "District"
 
         constraints = [
-            models.UniqueConstraint(fields=['state', 'name'], name="state_district_name"),
+            models.UniqueConstraint(
+                fields=['state', 'name'], name="state_district_name"),
         ]
 
 
 class DistrictName(TimeStampedModel):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    english = models.CharField(max_length=255, null=True, blank=True)
-    hindi = models.CharField(max_length=255, null=True, blank=True)
-    gujarati = models.CharField(max_length=255, null=True, blank=True)
-    telugu = models.CharField(max_length=255, null=True, blank=True)
-    tamil = models.CharField(max_length=255, null=True, blank=True)
-    kannada = models.CharField(max_length=255, null=True, blank=True)
-    punjabi = models.CharField(max_length=255, null=True, blank=True)
+    english = models.CharField(max_length=255, blank=True)
+    hindi = models.CharField(max_length=255, blank=True)
+    gujarati = models.CharField(max_length=255, blank=True)
+    telugu = models.CharField(max_length=255, blank=True)
+    tamil = models.CharField(max_length=255, blank=True)
+    kannada = models.CharField(max_length=255, blank=True)
+    punjabi = models.CharField(max_length=255, blank=True)
     history = HistoricalRecords()

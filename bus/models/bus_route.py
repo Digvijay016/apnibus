@@ -19,8 +19,8 @@ class BusRoute(TimeStampedModel):
     to_town = models.CharField(max_length=255, default='to town')
     start_time = models.TimeField(default='00:00:00')
     arrival_time = models.TimeField(default='00:00:00')
-    route = models.JSONField(default=list, null=True)
-    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, null=True)
+    route = models.JSONField(default=list, blank=True)
+    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, blank=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -60,9 +60,12 @@ class BusRoute(TimeStampedModel):
 
             for route_id in uuid_route_from_town_route_id_list:
                 if route_id in uuid_route_to_town_route_id_list:
-                    name = Route.objects.filter(id=route_id).values_list('name',flat=True).first()
-                    via = Route.objects.filter(id=route_id).values_list('via',flat=True).first()
-                    route_dict = {"route_id":route_id, "route_name":name, "via":via}
+                    name = Route.objects.filter(id=route_id).values_list(
+                        'name', flat=True).first()
+                    via = Route.objects.filter(id=route_id).values_list(
+                        'via', flat=True).first()
+                    route_dict = {"route_id": route_id,
+                                  "route_name": name, "via": via}
                     instance.route.append(route_dict)
                     # instance.via.append()
 

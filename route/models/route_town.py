@@ -23,9 +23,9 @@ class RouteTown(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     route = models.ForeignKey(
-        Route, on_delete=models.CASCADE, null=True, blank=True)
+        Route, on_delete=models.CASCADE, blank=True)
     town = models.ForeignKey(
-        Town, on_delete=models.PROTECT, null=True, blank=True)
+        Town, on_delete=models.PROTECT, blank=True)
     history = HistoricalRecords()
 
     class Meta:

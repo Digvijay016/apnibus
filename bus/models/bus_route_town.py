@@ -27,21 +27,21 @@ class BusRouteTown(TimeStampedModel):
     #     if request:
     #         # Access the request data
     #         data = request.data
-            
+
     #         # Do something with the request data
     #         self.towns = data
     #     super().save(*args, **kwargs)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     route = models.ForeignKey(
-        Route, on_delete=models.CASCADE, null=True)
-    duration = models.IntegerField(null=True)
-    calculated_duration = models.IntegerField(null=True)
-    missing_towns = models.JSONField(default=list, null=True)
-    towns = models.JSONField(default=list, null=True)
-    day = models.IntegerField(null=True, default=0)
+        Route, on_delete=models.CASCADE, blank=True)
+    duration = models.IntegerField(blank=True)
+    calculated_duration = models.IntegerField(blank=True)
+    missing_towns = models.JSONField(default=list, blank=True)
+    towns = models.JSONField(default=list, blank=True)
+    day = models.IntegerField(blank=True, default=0)
     bus_route = models.ForeignKey(
-        BusRoute, on_delete=models.CASCADE, null=True, related_name='bus_routes')
+        BusRoute, on_delete=models.CASCADE, blank=True, related_name='bus_routes')
     town_status = models.CharField(
         max_length=20, choices=STATUS, default=ACTIVE)
     town_stoppage_status = models.CharField(

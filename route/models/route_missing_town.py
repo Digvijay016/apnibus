@@ -11,12 +11,12 @@ from django.dispatch import receiver
 class RouteMissingTown(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
-    # town = models.ForeignKey(Town, on_delete=models.CASCADE, null=True)
+    # town = models.ForeignKey(Town, on_delete=models.CASCADE, blank=True)
     route = models.ForeignKey(
-        Route, on_delete=models.CASCADE, null=True, blank=True)
+        Route, on_delete=models.CASCADE, blank=True)
     missing_town = models.CharField(
-        max_length=255, default='town', null=True, blank=True)
-    duration = models.IntegerField(null=True, blank=True)
+        max_length=255, default='town', blank=True)
+    duration = models.IntegerField(blank=True)
     history = HistoricalRecords()
 
     # @staticmethod

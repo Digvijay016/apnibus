@@ -1,6 +1,4 @@
-import json
-from urllib import request
-from rest_framework import viewsets  # , generics, status
+from rest_framework import viewsets
 from bus.models.bus import Bus
 from django.http import JsonResponse
 from bus.models.bus_route_town import BusRouteTown
@@ -8,7 +6,7 @@ from bus.models.bus_routes_towns import BusRoutesTowns
 from bus.serializers.bus_route_town import BusRouteTownSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from utils.exception_handler import get_object_or_json404
+# from utils.exception_handler import get_object_or_json404
 
 
 class CreateBusRouteTownView(viewsets.ModelViewSet):

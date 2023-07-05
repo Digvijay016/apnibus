@@ -8,9 +8,9 @@ class City(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     name = models.CharField(max_length=255)
-    pincode = models.CharField(max_length=255, null=True, blank=True)
-    short_name = models.CharField(max_length=255, null=True, blank=True)
-    hindi_name = models.CharField(max_length=255, null=True, blank=True)
+    pincode = models.CharField(max_length=255, blank=True)
+    short_name = models.CharField(max_length=255, blank=True)
+    hindi_name = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 

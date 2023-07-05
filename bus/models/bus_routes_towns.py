@@ -26,11 +26,11 @@ class BusRoutesTowns(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     route = models.ForeignKey(
-        Route, on_delete=models.CASCADE, null=True)
-    duration = models.IntegerField(null=True)
-    calculated_duration = models.IntegerField(null=True)
-    towns = models.JSONField(default=list, null=True)
-    day = models.IntegerField(null=True, default=0)
+        Route, on_delete=models.CASCADE, blank=True)
+    duration = models.IntegerField(blank=True)
+    calculated_duration = models.IntegerField(blank=True)
+    towns = models.JSONField(default=list, blank=True)
+    day = models.IntegerField(blank=True, default=0)
     town_status = models.CharField(
         max_length=20, choices=STATUS, default=ACTIVE)
     town_stoppage_status = models.CharField(

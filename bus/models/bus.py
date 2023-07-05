@@ -15,8 +15,8 @@ class Bus(TimeStampedModel):
     operator = models.ForeignKey(
         Operator, on_delete=models.CASCADE, blank=True)
     bus_number = models.CharField(max_length=255, unique=True, blank=True)
-    pos_serial_no = models.ImageField(max_length=255, null=True, blank=True)
-    pos_dsn_number = models.CharField(max_length=255, null=True, blank=True)
+    pos_serial_no = models.ImageField(max_length=255, blank=True)
+    pos_dsn_number = models.CharField(max_length=255, blank=True)
     gps_sim_image = models.ImageField(max_length=255, blank=True)
     historical_records = HistoricalRecords()
 
