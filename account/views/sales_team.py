@@ -113,8 +113,8 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
         else:
             valid_otp = UserAuthenticationOTP.objects.filter(mobile=mobile, otp=otp, is_valid=True,
                                                              is_verified=False).first()
-            print("########## 1", valid_otp.otp, '#########')
-            if valid_otp.otp:
+            # print("########## 1", valid_otp.otp, '#########')
+            if valid_otp:
                 internal_team_user = SalesTeamUser.objects.get(mobile=mobile)
                 user = internal_team_user.user
                 print("########## 2", user, '#########')
