@@ -99,10 +99,10 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
             auth_token = Token.objects.get(user=user).key
             data = {}
             print("#######################",auth_token)
-            print("#######################",name)
+            # print("#######################",name)
             print("#######################",internal_team_user.mobile)
             data['auth_token'] = auth_token
-            data['name'] = internal_team_user.name
+            # data['name'] = internal_team_user.name
             data['mobile'] = internal_team_user.mobile
 
             user.is_active = True
