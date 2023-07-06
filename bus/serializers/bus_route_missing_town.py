@@ -8,4 +8,4 @@ class BusRouteMissingTownSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = BusRouteMissingTown
-        fields = ('id', 'route' ,'missing_town', 'duration')
+        fields = ('id', 'bus_route' ,'missing_town', 'duration')

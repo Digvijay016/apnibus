@@ -45,9 +45,6 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
         # Extract the 'towns' data from the parsed JSON
 
         json_body = json.loads(request.body);
-        print("###############################################################")
-        print(json_body)
-        print("###############################################################")
 
         error= ''
 
@@ -56,35 +53,35 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
             return send_response(status=status.HTTP_200_OK, error_msg=error,
                                  developer_message='Request failed due to invalid data.')
 
-        # route = request.data.get('route')
-        # town_id = request.data.get('town_id')
-        # town_stoppage_id = request.data.get('town_stoppage_id')
-        # town_status = request.data.get('town_status')
-        # town_stoppage_status = request.data.get('town_stoppage_status')
+        missing_towns_qs = BusRouteMissingTown.objects.all()
+        missing_towns_uid = [
+            str(uid) for uid in missing_towns_qs.values_list('id',flat=True)
+        ]
 
-        # print("##########################", route)
-        # print("##########################", town_id)
-        # print("##########################", town_stoppage_id)
-        # print("##########################", town_status)
-        # print("##########################", town_stoppage_status)
+        print("##########################",str(json_body['bus_route']))
 
-        # queryset = BusRoutesTowns.objects.all()
-        # towns = queryset.values_list('towns', flat=True)
-        # towns = list(towns)
-        # towns = towns[0]
-        # print("##########################", towns)
+        for uid in missing_towns_uid:
+            bus_route = BusRouteMissingTown.objects.filter(id=uid).values_list('bus_route',flat=True).first()
+            missing_town_name = BusRouteMissingTown.objects.filter(id=uid).values_list('missing_town',flat=True).first()
+            duration = BusRouteMissingTown.objects.filter(id=uid).values_list('duration',flat=True).first()
 
-        # for town in towns:
-        #     townId = town.get('town_id')
-        #     townStoppageId = town.get('town_stoppage_id')
-        #     if town_id == townId:
-        #         town['town_status'] = town_status
+            print("##########################",str(bus_route))
 
-        #     if town_stoppage_id == townStoppageId:
-        #         town['town_stoppage_status'] = town_stoppage_status
+            if str(bus_route) == str(json_body['bus_route']):
+                missing_town_dct = {
+                    'missing_town_id':uid,
+                    'missing_town_name':missing_town_name,
+                    'duration':duration,
+                    'missing_town_status':'inactive',
+                    'stoppage':[]
+                }
+                json_body['towns'].append(missing_town_dct)
+            
+        json_body['towns'] = sorted(json_body['towns'], key=lambda x:x['duration'])
 
-        # # missing_towns_qs = BusRouteMissingTown.objects.all()
-        
+        print("###############################################################")
+        print(json_body['towns'])
+        print("###############################################################")
 
         serializer = self.get_serializer(data=json_body)
         data = ''

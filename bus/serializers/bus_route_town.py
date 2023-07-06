@@ -18,8 +18,7 @@ class BusRouteTownSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = BusRouteTown
-        fields = ('id', 'route', 'bus_route', 'towns',
-                  'duration', 'missing_towns', 'eta_status')  # , 'bus_route_town_stoppages')
+        fields = ('id', 'route', 'bus_route', 'towns','days','another_trip')
 
     # def get_bus_route_town_stoppages(self, obj):
     #     qs = BusRouteTownStoppage.objects.filter(

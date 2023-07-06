@@ -22,6 +22,22 @@ class BusRouteTown(TimeStampedModel):
         (DELETION_READY, 'deletion_ready')
     )
 
+    TODAY = 'Today'
+    ALTERNATE = 'Alternate'
+
+    RETURNCHOICES = (
+        (TODAY, 'Today'),
+        (ALTERNATE, 'Alternate')
+    )
+
+    YES = 'Yes'
+    NO = 'No'
+
+    ANOTHERTRIP = (
+        (YES, 'Yes'),
+        (NO, 'No')
+    )
+
     # def save(self, *args, **kwargs):
     #     request = kwargs.pop('request', None)
     #     if request:
@@ -36,13 +52,10 @@ class BusRouteTown(TimeStampedModel):
     route = models.ForeignKey(
         Route, on_delete=models.CASCADE, blank=True)
     towns = models.JSONField(default=list, blank=True)
-    day = models.IntegerField(blank=True, default=0)
+    days = models.CharField(max_length=100, default='', choices=RETURNCHOICES)
     bus_route = models.ForeignKey(
         BusRoute, on_delete=models.CASCADE, blank=True, related_name='bus_routes')
-    town_status = models.CharField(
-        max_length=20, choices=STATUS, default=ACTIVE)
-    town_stoppage_status = models.CharField(
-        max_length=20, choices=STATUS, default=ACTIVE)
+    another_trip = models.CharField(max_length=100, default='', choices=ANOTHERTRIP)
     history = HistoricalRecords()
 
     def __str__(self):
