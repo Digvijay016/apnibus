@@ -16,7 +16,7 @@ class Operator(TimeStampedModel):
 
     VERIFICATIONPENDING = 'verification pending'
     VERIFIED = 'verified'
-    ALL = 'all'
+    # ALL = 'all'
     REJECTED = 'rejected'
 
     DEMO = 'Demo'
@@ -30,7 +30,7 @@ class Operator(TimeStampedModel):
     OPERATOR_STATUS = (
         (VERIFICATIONPENDING, 'verification pending'),
         (VERIFIED, 'verified'),
-        (ALL, 'all'),
+        # (ALL, 'all'),
         (REJECTED, 'rejected'),
     )
 
@@ -39,22 +39,23 @@ class Operator(TimeStampedModel):
         User, on_delete=models.CASCADE, related_name='operator_user')
     name = models.CharField(max_length=255, blank=True)
     company_name = models.CharField(max_length=255, blank=True)
-    mobile = models.CharField(max_length=20, unique=True, blank=True)
+    mobile = models.CharField(max_length=20, null=True, blank=True)
+    # operator_count = models.IntegerField(blank=True)
     address = models.CharField(max_length=255, blank=True)
     town = models.CharField(max_length=255, blank=True, default="")
     gstin = models.CharField(max_length=20, blank=True)
     pan_number = models.CharField(max_length=20, blank=True)
-    pan_photo = models.ImageField(max_length=255, blank=True)
+    pan_photo = models.ImageField(max_length=255, null=True ,blank=True)
     aadhar_number = models.CharField(max_length=20, blank=True)
     aadhar_front_photo = models.ImageField(
-        max_length=255, blank=True)
+        max_length=255, null=True ,blank=True)
     aadhar_back_photo = models.ImageField(
-        max_length=255, blank=True)
+        max_length=255, null=True ,blank=True)
     setup_fee = models.IntegerField(blank=True)
     monthly_subscription_fee = models.IntegerField(blank=True)
     rejection_reason = models.CharField(max_length=255, blank=True)
     status = models.CharField(
-        max_length=225, choices=OPERATOR_STATUS, default=ALL)
+        max_length=225, choices=OPERATOR_STATUS, default=VERIFICATIONPENDING)
     pos_given_as = models.CharField(
         max_length=20, choices=POS_GIVEN_AS, blank=True)
     history = HistoricalRecords()
@@ -91,22 +92,33 @@ class Operator(TimeStampedModel):
     @receiver(post_save, sender='account.Operator')
     def post_save_callback(sender, instance, created, **kwargs):
         if created:
+
+            adhar_front_link = ''
+            adhar_back_link = ''
+            pan_link = ''
+
             # Perform operations after creating a new instance
-            adhar_front_img = instance.aadhar_front_photo
-            adhar_back_img = instance.aadhar_back_photo
-            pan_img = instance.pan_photo
+            if instance.aadhar_front_photo is not None:
+                adhar_front_img = instance.aadhar_front_photo
+            if instance.aadhar_back_photo is not None:
+                adhar_back_img = instance.aadhar_back_photo
+            if instance.pan_photo is not None:
+                pan_img = instance.pan_photo
 
             upload_view = UploadAssetsToS3View()
 
-            adhar_front_link, _ = upload_view.create(
-                adhar_front_img, 'operator/' + instance.mobile
-            )
-            adhar_back_link, _ = upload_view.create(
-                adhar_back_img, 'operator/' + instance.mobile
-            )
-            pan_link, _ = upload_view.create(
-                pan_img, 'operator/' + instance.mobile
-            )
+            if adhar_front_img is not None and instance.mobile is not None:
+                adhar_front_link, _ = upload_view.create(
+                    adhar_front_img, 'operator/' + instance.mobile
+                )
+            if adhar_back_img is not None and instance.mobile is not None:
+                adhar_back_link, _ = upload_view.create(
+                    adhar_back_img, 'operator/' + instance.mobile
+                )
+            if pan_img is not None and instance.mobile is not None:
+                pan_link, _ = upload_view.create(
+                    pan_img, 'operator/' + instance.mobile
+                )
 
             instance.aadhar_front_photo = adhar_front_link
             instance.aadhar_back_photo = adhar_back_link

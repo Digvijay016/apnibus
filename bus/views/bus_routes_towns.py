@@ -16,3 +16,15 @@ class CreateBusRoutesTownsView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     http_method_names = ['get', 'post', 'put', 'delete']
+    lookup_field = 'route'
+
+
+    def get_queryset(self):
+        route_id = self.request.query_params.get('route')
+        if route_id:
+            print("#######################",route_id)
+            query_set = BusRoutesTowns.objects.filter(route=route_id)
+            print("#######################",query_set)
+            return query_set
+        else:
+            return self.queryset

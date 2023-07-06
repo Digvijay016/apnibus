@@ -10,11 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from paytmpg import LibraryConstants
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -30,6 +31,14 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'account.User'
 TIME_ZONE =  'Asia/Kolkata'
+
+# AWS Credentials
+AWS_BUCKET_NAME = "apnibus-bd-assets"
+AWS_IMG_FOLDER = "bd_images/img"
+AWS_ACCESS_KEY = "AKIATYP7GS4Z5FKJ4OV6"
+AWS_SECRET_KEY = "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"
+BUCKET_REGION_NAME = os.getenv("BUCKET_REGION_NAME", "ap-south-1")
+
 
 # Application definition
 

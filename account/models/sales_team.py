@@ -49,7 +49,7 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='sales_team_user_FK', blank=True)
+        User, on_delete=models.CASCADE, related_name='sales_team_user_FK', null=True ,blank=True)
     name = models.CharField(max_length=50, blank=True)
     name = models.CharField(max_length=50, blank=True)
     mobile = models.CharField(max_length=10)

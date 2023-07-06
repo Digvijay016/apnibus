@@ -36,17 +36,24 @@ class Bus(TimeStampedModel):
     def post_save_callback(sender, instance, created, **kwargs):
         if created:
             # Perform operations after creating a new instance
-            pos_serial_img = instance.pos_serial_no
-            gps_sim_img = instance.gps_sim_image
+            pos_serial_link = ''
+            gps_sim_link = ''
+            
+            if instance.pos_serial_no:
+                pos_serial_img = instance.pos_serial_no
+            if instance.gps_sim_image:
+                gps_sim_img = instance.gps_sim_image
 
             upload_view = UploadAssetsToS3View()
 
-            pos_serial_link, _ = upload_view.create(
-                pos_serial_img, 'bus/' + instance.bus_number
-            )
-            gps_sim_link, _ = upload_view.create(
-                gps_sim_img, 'bus/' + instance.bus_number
-            )
+            if pos_serial_img and instance.bus_number:
+                pos_serial_link, _ = upload_view.create(
+                    pos_serial_img, 'bus/' + instance.bus_number
+                )
+            if gps_sim_img and instance.bus_number:
+                gps_sim_link, _ = upload_view.create(
+                    gps_sim_img, 'bus/' + instance.bus_number
+                )
 
             instance.pos_serial_no = pos_serial_link
             instance.gps_sim_image = gps_sim_link

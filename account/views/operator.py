@@ -13,9 +13,12 @@ from account.models.user_authentication import UserAuthenticationOTP
 from account.models.user import User
 from account.serializers.operator import OperatorSerializer
 from utils.apnibus_logger import apnibus_logger
+from rest_framework.filters import SearchFilter
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from utils.sms_service import MSG91_TEMPLATE_IDS, MSG91Service
+from django.db.models import Q, Sum
+# from django.db.models import Value
 
 
 class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
@@ -24,12 +27,17 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
     """
     queryset = UserAuthenticationOTP.objects.all()
     serializer_class = UserOTPGenerationSerializer
+    error = ''
 
     def create(self, request, *args, **kwargs):
         mobile = request.data.get('mobile')
+        if not mobile.isnumeric() or len(mobile) != 10:
+            error = 'Invalid mobile number.Mobile number must be of 10 digits.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
         operator_obj = Operator.objects.filter(mobile=mobile).first()
         if not operator_obj:
-            return send_response(status=status.HTTP_400_BAD_REQUEST, developer_message='User doesn\'t exist.')
+            return send_response(status=status.HTTP_400_BAD_REQUEST, error_msg='User doesn\'t exist.', developer_message='Request failed due to invalid data.')
 
         else:
             # Invalidate previous OTPs
@@ -56,15 +64,19 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
             apnibus_logger.info(otp, mobile)
             if new_otp_created:
                 serializer.save(user=user_obj, otp=otp)
-            return send_response(status=status.HTTP_200_OK, developer_message='Request was successful')
+            return send_response(status=status.HTTP_200_OK,error_msg='', developer_message='Request was successful')
 
         else:
-            return send_response(status=status.HTTP_200_OK, error=serializer.errors,
+            return send_response(status=status.HTTP_200_OK, error_msg=serializer.errors,
                                  developer_message='Request failed due to invalid data.')
 
     @action(methods=['put'], detail=True)
     def verify(self, request, *args, **kwargs):
         mobile = request.data.get('mobile')
+        if not mobile.isnumeric() or len(mobile) != 10:
+            error = 'Invalid mobile number.Mobile number must be of 10 digits.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
         otp = request.data.get('otp')
         apnibus_logger.info(mobile, otp)
         valid_otp = UserAuthenticationOTP.objects.filter(mobile=mobile, otp=otp, is_valid=True,
@@ -89,9 +101,9 @@ class OperatorUserAuthOTPViewset(viewsets.ModelViewSet):
             valid_otp.is_verified = True
             valid_otp.save()
 
-            return send_response(status=status.HTTP_200_OK, ui_message='message',
+            return send_response(status=status.HTTP_200_OK, error_msg='',
                                  developer_message='Request was successful.', data=data)
-        return send_response(status=status.HTTP_401_UNAUTHORIZED,
+        return send_response(status=status.HTTP_401_UNAUTHORIZED, error_msg='Wrong otp',
                              developer_message='Invalid otp or mobile number')
 
 
@@ -102,7 +114,71 @@ class CreateOperatorView(viewsets.ModelViewSet):
     queryset = Operator.objects.all()
     serializer_class = OperatorSerializer
 
+    filter_backends = [SearchFilter]
+    search_fields = ['status']
+
     http_method_names = ['get', 'post', 'put', 'delete']
+
+    def create(self, request, *args, **kwargs):
+        mobile = request.data.get('mobile',None)
+        adhar_front_img = request.data.get('aadhar_front_photo', None)
+        adhar_back_img = request.data.get('aadhar_back_photo', None)
+        pan_img = request.data.get('pan_photo', None)
+        error=''
+
+        if mobile is None:
+            serializer = self.get_serializer(data=request.data)
+            data = ''
+            if serializer.is_valid():
+                instance = serializer.save()
+                data = self.get_serializer(instance).data
+
+            return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Operator created successfully.',
+                                        data=data)
+
+        if not mobile.isnumeric() or len(mobile) != 10:
+            error = 'Invalid mobile number.Mobile number must be of 10 digits.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
+
+        if not adhar_front_img:
+            error = 'Please select adhar front photo.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
+
+        if not adhar_back_img:
+            error = 'Please select adhar back photo.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
+
+        if not pan_img:
+            error = 'Please select pan photo.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
+
+        serializer = self.get_serializer(data=request.data)
+        data = ''
+        if serializer.is_valid():
+            instance = serializer.save()
+            data = self.get_serializer(instance).data
+
+        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Operator created successfully.',
+                                     data=data)
+
+        # Return a success response
+        # return JsonResponse({'message': 'Operator created successfully', 'data': data}, status=201)
+
+        
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_param = self.request.query_params.get('status', None)
+
+        if search_param:
+            queryset = queryset.filter(status__icontains=search_param)
+
+        return queryset
+
     # lookup_field = 'mobile'
 
     # def get_queryset(self):

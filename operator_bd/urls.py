@@ -96,17 +96,17 @@ router.register(r'route_town_stoppage', CreateRouteTownStoppageView)
 router.register(r'route_return', CreateBusRouteTownView)
 router.register(r'missing_town', BusRouteMissingTownView)
 router.register(r'town_search', CreateTownView)
-router.register(r'sales_team', CreateSalesUser)
+# router.register(r'sales_team', CreateSalesUser)
 router.register(r'sales_team/otp', UserAuthOTPViewset)
 router.register(r'sales_team/resend/otp', UserAuthOTPViewset)
 # router.register(r'sales_team/verify', UserAuthOTPViewset)
-router.register(r'sales_team', CreateSalesUser, basename="create-sales-user")
+# router.register(r'sales_team', CreateSalesUser, basename="create-sales-user")
 # router.register(r'routes', CreateRouteView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('sales_team/', include('account.urls'))
+    # path('sales_team/', include('account.urls'))
     # path('bus/', include('bus.urls')),
     # path('pricing/', include('pricing.urls')),
     # path('route/', include('route.urls'))

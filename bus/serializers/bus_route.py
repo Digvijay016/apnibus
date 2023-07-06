@@ -22,12 +22,14 @@ class BusRouteSerializer(DynamicFieldsModelSerializer):
         representation = super().to_representation(instance)
 
         request = self.context.get('request')
+        print("###############################",request)
 
         if request and request.method == 'GET':
 
             if representation['route']:
 
                 route = representation['route'][0]['route_id']
+                print("###############################",route)
 
                 queryset = BusRoutesTowns.objects.filter(route=route)
 

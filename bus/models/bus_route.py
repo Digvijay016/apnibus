@@ -25,9 +25,6 @@ class BusRoute(TimeStampedModel):
     return_id = models.CharField(max_length=255, default='', blank=True)
     history = HistoricalRecords()
 
-    # def __str__(self):
-    #     return str(self.bus.number) + " --> " + str(self.from_town) + str(self.to_town) + str(self.departure_time) + str(self.arrival_time)
-
     def __str__(self):
         return str(self.id)
 
@@ -53,29 +50,31 @@ class BusRoute(TimeStampedModel):
             print("############## from town id", uuid_route_from_town_id_list)
             print("############## to town id", uuid_route_to_town_id_list)
 
-            route_id_from_town_list = RouteTown.objects.filter(
-                town=uuid_route_from_town_id_list[0])
-            uuid_route_from_town_route_id_list = [
-                str(uuid) for uuid in route_id_from_town_list.values_list('route_id', flat=True)]
+            if uuid_route_from_town_id_list:
+                route_id_from_town_list = RouteTown.objects.filter(
+                    town=uuid_route_from_town_id_list[0])
+                uuid_route_from_town_route_id_list = [
+                    str(uuid) for uuid in route_id_from_town_list.values_list('route_id', flat=True)]
 
-            route_id_to_town_list = RouteTown.objects.filter(
-                town=uuid_route_to_town_id_list[0])
-            uuid_route_to_town_route_id_list = [
-                str(uuid) for uuid in route_id_to_town_list.values_list('route_id', flat=True)]
+                if uuid_route_to_town_id_list:
+                    route_id_to_town_list = RouteTown.objects.filter(
+                        town=uuid_route_to_town_id_list[0])
+                    uuid_route_to_town_route_id_list = [
+                        str(uuid) for uuid in route_id_to_town_list.values_list('route_id', flat=True)]
 
-            for route_id in uuid_route_from_town_route_id_list:
-                if route_id in uuid_route_to_town_route_id_list:
-                    name = Route.objects.filter(id=route_id).values_list(
-                        'name', flat=True).first()
-                    via = Route.objects.filter(id=route_id).values_list(
-                        'via', flat=True).first()
-                    route_dict = {"route_id": route_id,
-                                  "route_name": name, "via": via}
-                    instance.route.append(route_dict)
-                    # instance.via.append()
+                    for route_id in uuid_route_from_town_route_id_list:
+                        if route_id in uuid_route_to_town_route_id_list:
+                            name = Route.objects.filter(id=route_id).values_list(
+                                'name', flat=True).first()
+                            via = Route.objects.filter(id=route_id).values_list(
+                                'via', flat=True).first()
+                            route_dict = {"route_id": route_id,
+                                        "route_name": name, "via": via}
+                            instance.route.append(route_dict)
+                            # instance.via.append()
 
-            print('############# from town route ids',
-                  uuid_route_from_town_route_id_list)
-            print('############# to town route ids',
-                  uuid_route_to_town_route_id_list)
+                    print('############# from town route ids',
+                        uuid_route_from_town_route_id_list)
+                    print('############# to town route ids',
+                        uuid_route_to_town_route_id_list)
             instance.save()

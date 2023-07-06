@@ -36,18 +36,18 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         mobile = request.data.get('mobile', None)
-        internal_user_obj, created = SalesTeamUser.objects.get_or_create(
-            mobile=mobile, type=SalesTeamUser.SALES)
+        internal_user_obj = SalesTeamUser.objects.filter(
+            mobile=mobile, type=SalesTeamUser.SALES).first()
         print('################', internal_user_obj)
         if not internal_user_obj:
-            mobile_number = request.data.get('mobile_number', None)
+            mobile_number = request.data.get('mobile', None)
             name = request.data.get('name', None)
             internal_user_obj, created = SalesTeamUser.objects.get_or_create(
                 mobile=mobile_number, name=name, type=SalesTeamUser.SALES)
 
             if created:
                 user = User.objects.create(
-                    username=uuid.uuid1(), user_type=User.INTERNAL_USER)
+                    username=uuid.uuid1(), user_type=User.SALES)
                 token = Token.objects.create(user=user)
                 print('################', token)
                 internal_user_obj.user = user

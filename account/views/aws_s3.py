@@ -13,7 +13,7 @@ class UploadAssetsToS3View(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def create(self, image_name, folder_name, *args, **kwargs):
-        print('$$$$$$$$$$$$$$ Image Name $$$$$$$$$$$$$$$$', image_name)
+        # print('$$$$$$$$$$$$$$ Image Name $$$$$$$$$$$$$$$$', image_name)
         time_now = datetime.now()
         # img_file = request.FILES["img_file"]
         img_file = str(image_name)
@@ -36,6 +36,9 @@ class UploadAssetsToS3View(generics.CreateAPIView):
         data = {
             "file_link": file_link
         }
+        print('$$$$$$$$$$$$$$ Image Name $$$$$$$$$$$$$$$$', file_name)
+        print('$$$$$$$$$$$$$$ Image Name $$$$$$$$$$$$$$$$', image_name)
+        # os.remove(image_name)
 
         return file_link, send_response(
             data=data,
