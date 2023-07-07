@@ -116,6 +116,9 @@ class BusRoutesTowns(TimeStampedModel):
                             }
                             stoppage_list.append(stoppage_dct)
 
+                    if duration is None:
+                        duration = 0
+
                     town_dict = {"town_id": town_id,
                                 "town_name": name, "duration": duration, "town_status": instance.town_status, "stoppage": stoppage_list}  # , "via":via}
 
@@ -142,6 +145,12 @@ class BusRoutesTowns(TimeStampedModel):
                 print("#########################",dct)
 
                 instance.towns.append(dct)   
-
-        # instance.towns = sorted(instance.towns, key=lambda x: x.get('duration', 0))   
+            
+            towns_lst = instance.towns
+            print("############################################################")
+            print(towns_lst)
+            print("############################################################")
+            towns_lst = sorted(towns_lst, key=lambda x: x['duration'])
+            instance.towns.append(towns_lst[0])
+            # instance.towns = sorted(instance.towns, key=lambda x: x['duration'])   
             instance.save()      

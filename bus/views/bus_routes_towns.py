@@ -16,7 +16,7 @@ class CreateBusRoutesTownsView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     http_method_names = ['get', 'post', 'put', 'delete']
-    lookup_field = 'route'
+    # lookup_field = 'route'
 
 
     def get_queryset(self):

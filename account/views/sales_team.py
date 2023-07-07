@@ -114,8 +114,7 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
             return send_response(status=status.HTTP_200_OK,
                                  developer_message='Request was successful.', data=data)
         else:
-            valid_otp = UserAuthenticationOTP.objects.filter(mobile=mobile, otp=otp, is_valid=True,
-                                                             is_verified=False).first()
+            valid_otp = UserAuthenticationOTP.objects.filter(mobile=mobile, otp=otp).first()
             print("########## 1", valid_otp, '#########')
             if valid_otp:
                 internal_team_user = SalesTeamUser.objects.get(mobile=mobile)

@@ -61,7 +61,7 @@ class OTPService():
     @classmethod
     def check_validity(cls, instance):
         validity_period = timedelta(minutes=5)
-        now = timezone.now()
+        now = datetime.now()
         if now - instance.created_on < validity_period:
             return True
         else:

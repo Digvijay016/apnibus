@@ -13,14 +13,14 @@ class BusSerializer(DynamicFieldsModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-
+        direc = 'http://13.126.0.170:8080/media/'
         if 'pos_serial_no' in representation and representation['pos_serial_no'] is not None:
-            modified_url = representation['pos_serial_no'].replace('http://localhost:8000/media/', '').replace('%3A', ':').replace('https:/', 'https://').replace('%20', ' ')
+            modified_url = representation['pos_serial_no'].replace(direc, '').replace('%3A', ':').replace('https:/', 'https://').replace('%20', ' ')
             print(modified_url)
             representation['pos_serial_no'] = modified_url
 
         if 'gps_sim_image' in representation and representation['gps_sim_image'] is not None:
-            modified_url = representation['gps_sim_image'].replace('http://localhost:8000/media/', '').replace('%3A', ':').replace('https:/', 'https://').replace('%20', ' ')
+            modified_url = representation['gps_sim_image'].replace(direc, '').replace('%3A', ':').replace('https:/', 'https://').replace('%20', ' ')
             print(modified_url)
             representation['gps_sim_image'] = modified_url
 

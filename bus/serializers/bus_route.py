@@ -15,8 +15,8 @@ class BusRouteSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = BusRoute
-        fields = ('id', 'bus', 'from_town', 'to_town',
-                  'start_time', 'arrival_time', 'return_id' ,'route','towns')
+        fields = ('id', 'bus','route_selected' ,'from_town', 'to_town',
+                  'start_time', 'arrival_time', 'return_id' ,'routes','towns')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -24,19 +24,26 @@ class BusRouteSerializer(DynamicFieldsModelSerializer):
         request = self.context.get('request')
         print("###############################",request)
 
-        if request and request.method == 'GET':
+        # if request and request.method == 'GET':
 
-            if representation['route']:
-
-                route = representation['route'][0]['route_id']
-                print("###############################",route)
-
-                queryset = BusRoutesTowns.objects.filter(route=route)
-
-                if queryset.exists():
-                    print("###############################",queryset)
-                    towns = queryset.values_list('towns', flat=True)
-                    representation['towns'] = towns
+        if representation['route_selected']:
+            
+            queryset = ''
+            print("#########################",representation['return_id'])
+            if not representation['return_id']:
+                queryset = BusRoutesTowns.objects.filter(route=representation['route_selected'])
+            else:
+                queryset = BusRoute.objects.filter(id=representation['return_id'])
+            print("###########################################",queryset)
+            if queryset.exists():
+                print("###############################",queryset)
+                towns = queryset.values_list('towns', flat=True)
+                print("###########################################")
+                print(towns)
+                towns = list(towns)[0]
+                print("###########################################")
+                towns = sorted(towns, key=lambda x:x['duration'])
+                representation['towns'].append(towns)
 
         return representation
 

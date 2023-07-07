@@ -14,7 +14,7 @@ from utils.models import TimeStampedModel
 
 class Operator(TimeStampedModel):
 
-    VERIFICATIONPENDING = 'verification pending'
+    VERIFICATIONPENDING = 'verification_pending'
     VERIFIED = 'verified'
     # ALL = 'all'
     REJECTED = 'rejected'
@@ -28,7 +28,7 @@ class Operator(TimeStampedModel):
     )
 
     OPERATOR_STATUS = (
-        (VERIFICATIONPENDING, 'verification pending'),
+        (VERIFICATIONPENDING, 'verification_pending'),
         (VERIFIED, 'verified'),
         # (ALL, 'all'),
         (REJECTED, 'rejected'),

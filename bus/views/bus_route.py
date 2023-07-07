@@ -27,20 +27,21 @@ class CreateBusRouteView(viewsets.ModelViewSet):
         to_town = request.data.get('to_town',None)
         start_time = request.data.get('start_time',None)
         arrival_time = request.data.get('arrival_time',None)
+        return_id = request.data.get('return_id',None)
 
         error = ''
 
-        if not bus:
+        if not bus and not return_id:
             error = 'Please enter bus Id.'
             return send_response(status=status.HTTP_200_OK, error_msg=error,
                                  developer_message='Request failed due to invalid data.')
 
-        if not from_town:
+        if not from_town and not return_id:
             error = 'Please enter from_town Id.'
             return send_response(status=status.HTTP_200_OK, error_msg=error,
                                  developer_message='Request failed due to invalid data.')
 
-        if not to_town:
+        if not to_town and not return_id:
             error = 'Please enter to_town Id.'
             return send_response(status=status.HTTP_200_OK, error_msg=error,
                                  developer_message='Request failed due to invalid data.')
@@ -62,7 +63,7 @@ class CreateBusRouteView(viewsets.ModelViewSet):
             instance = serializer.save()
             data = self.get_serializer(instance).data
 
-        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Operator created successfully.',
+        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Bus Route created successfully.',
                                      data=data)
 
 

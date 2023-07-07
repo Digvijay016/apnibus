@@ -22,12 +22,12 @@ class BusRouteTown(TimeStampedModel):
         (DELETION_READY, 'deletion_ready')
     )
 
-    TODAY = 'Today'
-    ALTERNATE = 'Alternate'
+    TODAY = 'same_day'
+    ALTERNATE = 'next_day'
 
     RETURNCHOICES = (
-        (TODAY, 'Today'),
-        (ALTERNATE, 'Alternate')
+        (TODAY, 'Same Day'),
+        (ALTERNATE, 'Next Day')
     )
 
     YES = 'Yes'

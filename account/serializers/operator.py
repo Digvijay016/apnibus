@@ -23,7 +23,7 @@ class OperatorSerializer(DynamicFieldsModelSerializer):
         # Modify the aadhar_front_photo URL format in the representation
         # direc = 'http://'+str(UploadFiles.get_ec2_instance_ip('i-05d51c6ef2609f88f'))+':8000/media/'
         # direc = 'http://localhost:8000/media/'
-        direc = 'http://13.126.0.170:8080/'
+        direc = 'http://13.126.0.170:8080/media/'
         if 'aadhar_front_photo' in representation and representation['aadhar_front_photo'] is not None:
             modified_url = representation['aadhar_front_photo'].replace(direc,'').replace('%3A',':').replace('https:/','https://')
             representation['aadhar_front_photo'] = modified_url

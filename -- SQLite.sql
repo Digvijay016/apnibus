@@ -208,7 +208,7 @@ ALTER TABLE route_routemissingtown DROP COLUMN route_id;
 SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = bus_historicalbusroutetown;
 
 .schema route_routemissingtown;
-select * from sqlite_master where type='table' and name='bus_historicalbusroutemissingtown';
+select * from sqlite_master where type='table' and name='bus_historicalbusroute';
 
 CREATE TABLE "route_historicalroutemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
 CREATE TABLE "route_routemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
@@ -239,3 +239,34 @@ CREATE TABLE "bus_historicalbusroutetown" ("created_on" datetime NOT NULL, "upda
 
 CREATE TABLE "bus_busroutemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "missing_town" varchar(255) NOT NULL, "duration" integer NOT NULL, "bus_route_id" char(32) NULL REFERENCES "bus_busroute" ("id") DEFERRABLE INITIALLY DEFERRED)
 CREATE TABLE "bus_historicalbusroutemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "missing_town" varchar(255) NOT NULL, "duration" integer NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "route_id" char(32) NULL, "bus_route_id" char(32) NULL REFERENCES "bus_busroute" ("id") DEFERRABLE INITIALLY DEFERRED)
+
+ALTER TABLE "bus_historicalbusroute" RENAME COLUMN route TO routes;
+ALTER TABLE "bus_busroute" RENAME COLUMN route_id TO route_selected_id;
+ALTER TABLE "bus_historicalbusroute" DROP COLUMN "route_id";
+ALTER TABLE "bus_busroute" ADD COLUMN route_id char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED ;
+ALTER TABLE "bus_historicalbusroute" ADD COLUMN route_selected_id char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED ;
+
+DROP TABLE bus_historicalbusroute;
+
+CREATE TABLE bus_historicalbusroute(
+  created_on NUM,
+  updated_on NUM,
+  is_deleted NUM,
+  "id" char(32) NOT NULL,
+  "from_town_id" char(32) NULL REFERENCES "route_town" ("id") DEFERRABLE INITIALLY DEFERRED,
+  "to_town_id" char(32) NULL REFERENCES "route_town" ("id") DEFERRABLE INITIALLY DEFERRED,
+  start_time NUM,
+  arrival_time NUM,
+  bus_id char(32) NULL REFERENCES "bus_bus" ("id") DEFERRABLE INITIALLY DEFERRED,
+  "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  history_date datetime NOT NULL,
+  history_change_reason TEXT,
+  history_type TEXT,
+  return_id char(32),
+  history_user_id TEXT,
+  "routes" TEXT,
+  "towns" TEXT DEFAULT '[]'
+, route_selected_id char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED);
+
+DELETE FROM bus_busroute;
+DELETE FROM bus_historicalbusroute;
