@@ -13,7 +13,7 @@ class BusSerializer(DynamicFieldsModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        direc = 'http://13.126.0.170:8080/media/'
+        direc = 'http://13.126.0.170:8080/'
         if 'pos_serial_no' in representation and representation['pos_serial_no'] is not None:
             modified_url = representation['pos_serial_no'].replace(direc, '').replace('%3A', ':').replace('https:/', 'https://').replace('%20', ' ')
             print(modified_url)

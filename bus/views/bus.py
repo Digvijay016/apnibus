@@ -28,6 +28,8 @@ class CreateBusView(viewsets.ModelViewSet):
         pos_serial_img = request.data.get('pos_serial_no',None)
         gps_sim_img = request.data.get('gps_sim_image',None)
 
+        error = ''
+
         if not bus_number:
             error = 'Please enter bus number.'
             return send_response(status=status.HTTP_200_OK, error_msg=error,
@@ -44,13 +46,16 @@ class CreateBusView(viewsets.ModelViewSet):
                                  developer_message='Request failed due to invalid data.')
 
         serializer = self.get_serializer(data=request.data)
-        data = ''
+        # data = ''
         if serializer.is_valid():
             instance = serializer.save()
             data = self.get_serializer(instance).data
 
-        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Operator created successfully.',
+            return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Bus created successfully.',
                                      data=data)
+        error = 'Serialization Failed'
+        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Request Failed.',
+                                     data='')
 
     def get_queryset(self):
         operator_id = self.request.query_params.get('operator')
