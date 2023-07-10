@@ -1,23 +1,28 @@
-# from django.contrib import admin
-# from bus.models.bus import Bus
-# from bus.models.bus_route import BusRoute
-# from bus.models.bus_route_town import BusRouteTown
+from django.contrib import admin
+from bus.models.bus import Bus
+from bus.models.bus_route import BusRoute
+from bus.models.bus_route_town import BusRouteTown
 
 
-# class BusAdmin(admin.ModelAdmin):
-#     model = Bus
-#     list_display = ('bus_number', 'pos_dsn_number')
+class BusAdmin(admin.ModelAdmin):
+    model = Bus
+    list_display = ('bus_number', 'get_operator','pos_dsn_number')
+    search_fields = []
 
-# admin.site.register(Bus, BusAdmin)
+    @admin.display(description='Operator')
+    def get_operator(self, obj):
+        return obj.operator.name
 
-# # class BusRouteAdmin(admin.ModelAdmin):
-# #     model = BusRoute
-# #     list_display = ('from_town', 'to_town','start_time', 'arrival_time')
+admin.site.register(Bus, BusAdmin)
 
-# # admin.site.register(BusRoute, BusRouteAdmin)
+class BusRouteAdmin(admin.ModelAdmin):
+    model = BusRoute
+    list_display = ('from_town', 'to_town','start_time', 'arrival_time')
 
-# # class BusRouteTownAdmin(admin.ModelAdmin):
-# #     model = BusRouteTown
-# #     list_display = ('days')
+admin.site.register(BusRoute, BusRouteAdmin)
 
-# # admin.site.register(BusRouteTown, BusRouteTownAdmin)
+class BusRouteTownAdmin(admin.ModelAdmin):
+    model = BusRouteTown
+    list_display = ('days','towns')
+
+admin.site.register(BusRouteTown, BusRouteTownAdmin)

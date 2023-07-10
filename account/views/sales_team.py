@@ -2,10 +2,7 @@ import uuid
 
 from account.models.master_otp import MasterOTP
 
-# from account.models.conductor_se import ConductorSE
-
 from account.serializers.sales_team import SalesTeamDataSerializer
-# from operators.models.operator_payment import OperatorInvoice
 from rest_framework import viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -18,11 +15,9 @@ from account.models.sales_team import SalesTeamUser
 from account.models.user import User
 from rest_framework import viewsets, generics
 from utils.apnibus_logger import apnibus_logger
-# from bus.models import Bus
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from datetime import date, timedelta
-# from booking.models.ticket import TicketDetail
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -38,7 +33,12 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
         mobile = request.data.get('mobile', None)
         internal_user_obj = SalesTeamUser.objects.filter(
             mobile=mobile, type=SalesTeamUser.SALES).first()
-        print('################', internal_user_obj)
+
+        if not mobile.isnumeric() or len(mobile) != 10:
+            error = 'Invalid mobile number.Mobile number must be of 10 digits.'
+            return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed due to invalid data.')
+
         if not internal_user_obj:
             mobile_number = request.data.get('mobile', None)
             name = request.data.get('name', None)
@@ -49,13 +49,8 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
                 user = User.objects.create(
                     username=uuid.uuid1(), user_type=User.SALES)
                 token = Token.objects.create(user=user)
-                print('################', token)
                 internal_user_obj.user = user
                 internal_user_obj.save()
-
-                # send_response(status=status.HTTP_200_OK, developer_message="User Created")
-
-            # send_response(status=status.HTTP_400_BAD_REQUEST, developer_message="User already exists")
 
         else:
             # Invalidate previous OTPs
@@ -82,47 +77,37 @@ class UserAuthOTPViewset(viewsets.ModelViewSet):
         otp = request.data.get('otp')
         apnibus_logger.info(mobile, otp)
 
-        print('################## ', mobile, otp)
-
-        # db_master_otp = MasterOTP.objects.filter(
-        #     otp_type=MasterOTP.CONDUCTOR_SE).last().otp
-
         db_master_otp = 0000
 
         ui_message = "Request was successful."
-
-        print("###############")
 
         if otp == db_master_otp:
             internal_team_user = SalesTeamUser.objects.get(mobile=mobile)
             user = internal_team_user.user
             auth_token = Token.objects.get(user=user).key
             data = {}
-            print("#######################",auth_token)
-            # print("#######################",name)
-            print("#######################",internal_team_user.mobile)
             data['auth_token'] = auth_token
-            # data['name'] = internal_team_user.name
+            data['name'] = internal_team_user.name
             data['mobile'] = internal_team_user.mobile
 
             user.is_active = True
             user.save()
-            # valid_otp.is_valid = False
-            # valid_otp.is_verified = True
-            # valid_otp.save()
+            valid_otp.is_valid = False
+            valid_otp.is_verified = True
+            valid_otp.save()
 
             return send_response(status=status.HTTP_200_OK,
                                  developer_message='Request was successful.', data=data)
         else:
             valid_otp = UserAuthenticationOTP.objects.filter(mobile=mobile, otp=otp).first()
-            print("########## 1", valid_otp, '#########')
+            
             if valid_otp:
                 internal_team_user = SalesTeamUser.objects.get(mobile=mobile)
                 user = internal_team_user.user
-                print("########## 2", user, '#########')
+                
                 auth_token = Token.objects.get(user=user).key
                 data = {}
-                print("########## 3", auth_token, '#########')
+                
                 data['auth_token'] = auth_token
                 data['name'] = internal_team_user.name
                 data['mobile'] = internal_team_user.mobile

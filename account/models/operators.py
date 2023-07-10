@@ -4,23 +4,25 @@ import uuid
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from account.models.user import User
+from account.models.sales_team import SalesTeamUser
 from simple_history.models import HistoricalRecords
 from account.views.aws_s3 import UploadAssetsToS3View
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 
 from utils.models import TimeStampedModel
 
 class Operator(TimeStampedModel):
 
-    VERIFICATIONPENDING = 'verification_pending'
-    VERIFIED = 'verified'
+    VERIFICATION_PENDING = 'p'
+    VERIFIED = 'v'
     # ALL = 'all'
-    REJECTED = 'rejected'
+    REJECTED = 'r'
 
-    DEMO = 'Demo'
-    SOLD = 'Sold'
+    DEMO = 'd'
+    SOLD = 's'
 
     POS_GIVEN_AS = (
         (DEMO, 'Demo'),
@@ -28,15 +30,16 @@ class Operator(TimeStampedModel):
     )
 
     OPERATOR_STATUS = (
-        (VERIFICATIONPENDING, 'verification_pending'),
-        (VERIFIED, 'verified'),
+        (VERIFICATION_PENDING, 'Verification Pending'),
+        (VERIFIED, 'Verified'),
         # (ALL, 'all'),
-        (REJECTED, 'rejected'),
+        (REJECTED, 'Rejected'),
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='operator_user')
+    # sales_team_user = models.ForeignKey(SalesTeamUser, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True)
     company_name = models.CharField(max_length=255, blank=True)
     mobile = models.CharField(max_length=20, null=True, blank=True)
@@ -55,7 +58,7 @@ class Operator(TimeStampedModel):
     monthly_subscription_fee = models.IntegerField(blank=True)
     rejection_reason = models.CharField(max_length=255, blank=True)
     status = models.CharField(
-        max_length=225, choices=OPERATOR_STATUS, default=VERIFICATIONPENDING)
+        max_length=225, choices=OPERATOR_STATUS, default=VERIFICATION_PENDING)
     pos_given_as = models.CharField(
         max_length=20, choices=POS_GIVEN_AS, blank=True)
     history = HistoricalRecords()

@@ -53,8 +53,8 @@ class CreateBusView(viewsets.ModelViewSet):
 
             return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Bus created successfully.',
                                      data=data)
-        error = 'Serialization Failed'
-        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Request Failed.',
+        # error = 'Serialization Failed'
+        return send_response(status=status.HTTP_200_OK, error_msg=serializer.errors ,developer_message='Request Failed.',
                                      data='')
 
     def get_queryset(self):
@@ -66,67 +66,3 @@ class CreateBusView(viewsets.ModelViewSet):
             return query_set
         else:
             return self.queryset
-
-    # def create(self, request):
-    #     mobile_number = request.data.get('mobile')
-
-    #     # Retrieve the user based on the mobile number
-    #     try:
-    #         operator = Operator.objects.get(mobile=mobile_number)
-    #     except:
-    #         return Response({'error': 'Invalid Mobile Number'}, status=400)
-
-    #     # Create a new bus object
-    #     request.data['operator'] = operator.id
-
-    #     serializer = BusSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         bus = serializer.save()
-    #         data = self.get_serializer(bus).data
-    #         return Response({'success': 'Bus created successfully', 'data': data}, status=201)
-    #     else:
-    #         return Response(serializer.errors, status=400)
-
-    # def retrieve(self, request, *args, **kwargs):
-    #     mobile = self.request.data.get('mobile')
-
-    #     # print("###################", mobile)
-    #     # Retrieve the user based on the mobile number
-    #     try:
-    #         operator = Operator.objects.filter(
-    #             mobile=mobile).values_list('id', flat=True).first()
-    #         # print('###############', operator)
-    #     except:
-    #         return Response({'error': 'Invalid Mobile Number'}, status=400)
-
-    #     bus = Bus.objects.filter(operator=operator)
-    #     serializer = self.get_serializer(bus, many=True)
-    #     data = serializer.data
-    #     return Response({'success': 'Bus fetched successfully', 'data': data}, status=200)
-
-    # def update(self, request, *args, **kwargs):
-    #     # lookup_field = 'bus_number'
-
-    #     bus_number = self.request.data.get('bus_number')
-    #     # # partial = kwargs.pop('partial', False)
-    #     # instance = self.get_object()
-    #     # print('###############', instance)
-    #     # serializer = self.get_serializer(instance, data=request.data, partial=partial)
-    #     # serializer.is_valid(raise_exception=True)
-    #     # self.perform_update(serializer)
-    #     # return Response(serializer.data)
-
-    #     try:
-    #         instance = Bus.objects.filter(
-    #             bus_number=bus_number).values()#.values_list('id', flat=True).first()
-    #         # print('###############', operator)
-    #     except:
-    #         return Response({'error': 'Invalid Bus Number'}, status=400)
-
-    #     serializer = self.get_serializer(
-    #         instance, data=request.data, partial=True)
-    #     print('#################',serializer)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_update(serializer)
-
-    #     return Response({'success': 'Bus updated successfully', 'data': serializer.data}, status=200)

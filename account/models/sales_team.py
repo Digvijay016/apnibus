@@ -51,7 +51,6 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='sales_team_user_FK', null=True ,blank=True)
     name = models.CharField(max_length=50, blank=True)
-    name = models.CharField(max_length=50, blank=True)
     mobile = models.CharField(max_length=10)
     email = models.EmailField(blank=True)
     type = models.CharField(max_length=255, choices=TYPE, default=SALES)
@@ -59,15 +58,3 @@ class SalesTeamUser(AbstractUser, TimeStampedModel):
 
     def __str__(self):
         return f"{self.mobile}"
-
-    @staticmethod
-    @receiver(post_save, sender='account.SalesTeamUser')
-    def post_save_callback(sender, instance, created, **kwargs):
-        if created:
-            internal_user_obj = SalesTeamUser.objects.get(
-                mobile=instance.mobile, type=SalesTeamUser.SALES)
-            print('################', internal_user_obj)
-            if internal_user_obj:
-                token = Token.objects.create(user=internal_user_obj.user)
-                print('################', token)
-            instance.save()

@@ -25,15 +25,15 @@ class OperatorSerializer(DynamicFieldsModelSerializer):
         # direc = 'http://localhost:8000/media/'
         direc = 'http://13.126.0.170:8080/'
         if 'aadhar_front_photo' in representation and representation['aadhar_front_photo'] is not None:
-            modified_url = representation['aadhar_front_photo'].replace(direc,'').replace('%3A',':').replace('https:/','https://')
+            modified_url = representation['aadhar_front_photo'].replace(direc,'').replace(' ','_').replace('%3A',':').replace('https:/','https://')
             representation['aadhar_front_photo'] = modified_url
 
         if 'aadhar_back_photo' in representation and representation['aadhar_back_photo'] is not None:
-            modified_url = representation['aadhar_back_photo'].replace(direc,'').replace('%3A',':').replace('https:/','https://')
+            modified_url = representation['aadhar_back_photo'].replace(direc,'').replace(' ','_').replace('%3A',':').replace('https:/','https://')
             representation['aadhar_back_photo'] = modified_url
         
         if 'pan_photo' in representation and representation['pan_photo'] is not None:
-            modified_url = representation['pan_photo'].replace(direc,'').replace('%3A',':').replace('https:/','https://')
+            modified_url = representation['pan_photo'].replace(direc,'').replace(' ','_').replace('%3A',':').replace('https:/','https://')
             representation['pan_photo'] = modified_url
 
         # if '/home/ubuntu/Bd/apnibus/account/media':

@@ -124,6 +124,7 @@ class CreateOperatorView(viewsets.ModelViewSet):
         adhar_front_img = request.data.get('aadhar_front_photo', None)
         adhar_back_img = request.data.get('aadhar_back_photo', None)
         pan_img = request.data.get('pan_photo', None)
+        user = self.request.user
         error=''
 
         if mobile is None:
@@ -140,6 +141,11 @@ class CreateOperatorView(viewsets.ModelViewSet):
             error = 'Invalid mobile number.Mobile number must be of 10 digits.'
             return send_response(status=status.HTTP_200_OK, error_msg=error,
                                  developer_message='Request failed due to invalid data.')
+            if mobile:
+                operator_mobile = Operator.objects.filter(mobile=mobile).values_list('mobile',flat=True).first()
+                if operator_mobile:
+                    return send_response(status=status.HTTP_200_OK, error_msg=error,
+                                 developer_message='Request failed.User already exists.Please use different mobile.')
 
         if not adhar_front_img:
             error = 'Please select adhar front photo.'
@@ -157,13 +163,19 @@ class CreateOperatorView(viewsets.ModelViewSet):
                                  developer_message='Request failed due to invalid data.')
 
         serializer = self.get_serializer(data=request.data)
-        data = ''
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@",serializer)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@",serializer.is_valid())
+        # data = ''
+        headers = request.META
+        print("####################### Headers Operator",headers)
         if serializer.is_valid():
             instance = serializer.save()
             data = self.get_serializer(instance).data
-
-        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Operator created successfully.',
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
+            return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Operator created successfully.',
                                      data=data)
+        return send_response(status=status.HTTP_200_OK, error_msg=serializer.errors ,developer_message='Request failed.',
+                                     data="")
 
         # Return a success response
         # return JsonResponse({'message': 'Operator created successfully', 'data': data}, status=201)
@@ -173,9 +185,14 @@ class CreateOperatorView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_param = self.request.query_params.get('status', None)
+        user = self.request.user
+
+        print("################################## user",user)
 
         if search_param:
-            queryset = queryset.filter(status__icontains=search_param)
+            queryset = queryset.filter(status__icontains=search_param,user=user)
+
+        # queryset = queryset.filter(user=user)
 
         return queryset
 

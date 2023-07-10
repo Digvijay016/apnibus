@@ -208,7 +208,7 @@ ALTER TABLE route_routemissingtown DROP COLUMN route_id;
 SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = bus_historicalbusroutetown;
 
 .schema route_routemissingtown;
-select * from sqlite_master where type='table' and name='bus_historicalbusroute';
+select * from sqlite_master where type='table' and name='account_historicaloperator';
 
 CREATE TABLE "route_historicalroutemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
 CREATE TABLE "route_routemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
@@ -270,3 +270,15 @@ CREATE TABLE bus_historicalbusroute(
 
 DELETE FROM bus_busroute;
 DELETE FROM bus_historicalbusroute;
+
+DELETE FROM bus_busroutestowns;
+DELETE FROM bus_historicalbusroutestowns;
+
+UPDATE "account_operator" SET user_id = 'b0294f4a18f211eea8947e44607f8f04';# where name='Operator 2';
+
+DROP TABLE "account_operator";
+DROP TABLE "account_historicaloperator";
+
+CREATE TABLE "account_operator" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "name" varchar(255) NULL, "company_name" varchar(255) NULL, "mobile" varchar(20) NULL UNIQUE, "address" varchar(255) NULL, "town" varchar(255) NULL, "gstin" varchar(20) NULL, "pan_number" varchar(20) NULL, "pan_photo" varchar(255) NULL, "aadhar_number" varchar(20) NULL, "aadhar_front_photo" varchar(255) NULL, "aadhar_back_photo" varchar(255) NULL, "setup_fee" integer NULL, "monthly_subscription_fee" integer NULL, "rejection_reason" varchar(255) NULL, "status" varchar(225) NOT NULL, "pos_given_as" varchar(20) NULL, "user_id" char(32) NOT NULL UNIQUE REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+
+CREATE TABLE "account_historicaloperator" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "name" varchar(255) NULL, "company_name" varchar(255) NULL, "mobile" varchar(20) NULL, "address" varchar(255) NULL, "town" varchar(255) NULL, "gstin" varchar(20) NULL, "pan_number" varchar(20) NULL, "pan_photo" text NULL, "aadhar_number" varchar(20) NULL, "aadhar_front_photo" text NULL, "aadhar_back_photo" text NULL, "setup_fee" integer NULL, "monthly_subscription_fee" integer NULL, "rejection_reason" varchar(255) NULL, "status" varchar(225) NOT NULL, "pos_given_as" varchar(20) NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" char(32) NULL);
