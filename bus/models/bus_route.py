@@ -19,7 +19,7 @@ class BusRoute(TimeStampedModel):
     arrival_time = models.TimeField(default='00:00:00')
     routes = models.JSONField(default=list, blank=True)
     towns = models.JSONField(default=list, blank=True)
-    route_selected = models.ForeignKey(Route, on_delete=models.CASCADE, blank=True)
+    route_selected = models.ForeignKey(Route, on_delete=models.CASCADE, null=True ,blank=True)
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, blank=True)
     return_id = models.CharField(max_length=255, default='', blank=True)
     history = HistoricalRecords()

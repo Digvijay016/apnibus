@@ -208,7 +208,7 @@ ALTER TABLE route_routemissingtown DROP COLUMN route_id;
 SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = bus_historicalbusroutetown;
 
 .schema route_routemissingtown;
-select * from sqlite_master where type='table' and name='account_historicaloperator';
+select * from sqlite_master where type='table' and name='bus_historicalbus';
 
 CREATE TABLE "route_historicalroutemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
 CREATE TABLE "route_routemissingtown" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "route_id" char(32) NULL REFERENCES "route_route" ("id") DEFERRABLE INITIALLY DEFERRED, "duration" integer NULL, "missing_town" varchar(255) NULL);
@@ -282,3 +282,135 @@ DROP TABLE "account_historicaloperator";
 CREATE TABLE "account_operator" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "name" varchar(255) NULL, "company_name" varchar(255) NULL, "mobile" varchar(20) NULL UNIQUE, "address" varchar(255) NULL, "town" varchar(255) NULL, "gstin" varchar(20) NULL, "pan_number" varchar(20) NULL, "pan_photo" varchar(255) NULL, "aadhar_number" varchar(20) NULL, "aadhar_front_photo" varchar(255) NULL, "aadhar_back_photo" varchar(255) NULL, "setup_fee" integer NULL, "monthly_subscription_fee" integer NULL, "rejection_reason" varchar(255) NULL, "status" varchar(225) NOT NULL, "pos_given_as" varchar(20) NULL, "user_id" char(32) NOT NULL UNIQUE REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED);
 
 CREATE TABLE "account_historicaloperator" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "name" varchar(255) NULL, "company_name" varchar(255) NULL, "mobile" varchar(20) NULL, "address" varchar(255) NULL, "town" varchar(255) NULL, "gstin" varchar(20) NULL, "pan_number" varchar(20) NULL, "pan_photo" text NULL, "aadhar_number" varchar(20) NULL, "aadhar_front_photo" text NULL, "aadhar_back_photo" text NULL, "setup_fee" integer NULL, "monthly_subscription_fee" integer NULL, "rejection_reason" varchar(255) NULL, "status" varchar(225) NOT NULL, "pos_given_as" varchar(20) NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" char(32) NULL);
+
+
+DELETE FROM "bus_busroute";
+DELETE FROM "bus_historicalbusroute";
+
+DROP TABLE "account_salesteamuser";
+DROP TABLE "account_historicalsalesteamuser";
+
+CREATE TABLE "account_salesteamuser" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL,"password" varchar(128) NOT NULL, "last_login" datetime NULL, "is_superuser" bool NOT NULL, "username" varchar(150) NULL, "first_name" varchar(150) NULL, "last_name" varchar(150) NULL, "is_staff" bool NULL, "is_active" bool NULL, "date_joined" datetime NULL, "id" char(32) NOT NULL PRIMARY KEY, "name" varchar(50) NULL, "mobile" varchar(10) NULL, "email" varchar(254) NULL, "type" varchar(255) NULL, "otp" varchar(6) NULL);
+CREATE TABLE "account_historicalsalesteamuser" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL,"password" varchar(128) NOT NULL, "last_login" datetime NULL, "is_superuser" bool NOT NULL, "username" varchar(150) NULL, "first_name" varchar(150) NULL, "last_name" varchar(150) NULL, "is_staff" bool NULL, "is_active" bool NULL, "date_joined" datetime NULL, "id" char(32) NOT NULL, "name" varchar(50) NULL, "mobile" varchar(10) NULL, "email" varchar(254) NULL, "type" varchar(255) NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "otp" varchar(6) NULL);
+
+DROP TABLE "account_operator";
+DROP TABLE "account_historicaloperator";
+
+UPDATE "account_operator" SET username = 'tt0361841fae11ee9aedc15af096408r' where name='Operator 3';
+
+CREATE TABLE "account_operator" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL,"last_login" varchar(150) NULL, "is_superuser" bool NULL, "first_name" varchar(150) NULL, "last_name" varchar(150) NULL, "email" varchar(254) NULL, "is_staff" bool NULL, "is_active" bool NULL, "date_joined" datetime NULL, "id" char(32) NOT NULL PRIMARY KEY, "username" varchar(150) NULL, "name" varchar(255) NULL, "company_name" varchar(255) NULL, "mobile" varchar(20) NULL, "address" varchar(255) NULL, "town" varchar(255) NULL, "gstin" varchar(20) NULL, "pan_number" varchar(20) NULL, "pan_photo" varchar(255) NULL, "aadhar_number" varchar(20) NULL, "aadhar_front_photo" varchar(255) NULL, "aadhar_back_photo" varchar(255) NULL, "setup_fee" integer NULL, "monthly_subscription_fee" integer NULL, "rejection_reason" varchar(255) NULL, "status" varchar(225) NULL, "pos_given_as" varchar(20) NULL, "user_id" char(32) NULL REFERENCES "account_salesteamuser" ("id") DEFERRABLE INITIALLY DEFERRED, "password" varchar(128) NULL)
+CREATE TABLE "account_historicaloperator" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL,"last_login" varchar(150) NULL, "is_superuser" bool NULL, "first_name" varchar(150) NULL, "last_name" varchar(150) NULL, "email" varchar(254) NULL, "is_staff" bool NULL, "is_active" bool NULL, "date_joined" datetime NULL, "id" char(32) NULL, "username" varchar(150) NULL, "name" varchar(255) NULL, "company_name" varchar(255) NULL, "mobile" varchar(20) NULL, "address" varchar(255) NULL, "town" varchar(255) NULL, "gstin" varchar(20) NULL, "pan_number" varchar(20) NULL, "pan_photo" text NULL, "aadhar_number" varchar(20) NULL, "aadhar_front_photo" text NULL, "aadhar_back_photo" text NULL, "setup_fee" integer NULL, "monthly_subscription_fee" integer NULL, "rejection_reason" varchar(255) NULL, "status" varchar(225) NULL, "pos_given_as" varchar(20) NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" char(32) NULL, "password" varchar(128) NULL)
+
+DROP TABLE "bus_bus";
+DROP TABLE "bus_historicalbus";
+
+DELETE FROM "bus_bus";
+DELETE FROM "bus_historicalbus";
+
+CREATE TABLE "bus_bus" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL PRIMARY KEY, "bus_number" varchar(255) NOT NULL UNIQUE, "pos_serial_no" varchar(255) NULL, "pos_dsn_number" varchar(255) NULL, "gps_sim_image" varchar(255) NULL, "operator_id" char(32) NULL REFERENCES "account_operator" ("id") DEFERRABLE INITIALLY DEFERRED,category VARCHAR(255) DEFAULT 'GENERAL',
+    brand VARCHAR(255) NULL,
+    has_wifi BOOLEAN DEFAULT FALSE,
+    has_power_plug BOOLEAN DEFAULT FALSE,
+    is_sanitized BOOLEAN DEFAULT FALSE,
+    is_air_conditioned BOOLEAN DEFAULT FALSE,
+    operating_as VARCHAR(255),
+    driver_name VARCHAR(255),
+    driver_contact VARCHAR(20),
+    conductor_name VARCHAR(255),
+    conductor_contact VARCHAR(20),
+    seat_type VARCHAR(50) DEFAULT 'SEATER',
+    layout_type VARCHAR(255) DEFAULT 'LAYOUT_1',
+    is_multi_axle BOOLEAN DEFAULT FALSE,
+    normal_seats_capacity INTEGER DEFAULT 0,
+    single_sleeper_capacity INTEGER DEFAULT 0,
+    sharing_sleeper_capacity INTEGER DEFAULT 0,
+    upper_single_sleeper_capacity INTEGER DEFAULT 0,
+    upper_sharing_sleeper_capacity INTEGER DEFAULT 0,
+    recliner_capacity INTEGER DEFAULT 0,
+    status VARCHAR(255) DEFAULT 'ONBOARDED',
+    gps_status VARCHAR(255) DEFAULT 'NOT_INSTALLED',
+    commission DECIMAL(6, 2) DEFAULT 0,
+    digital_commission INTEGER,
+    cash_commission INTEGER,
+    is_booking_allowed BOOLEAN DEFAULT TRUE,
+    is_qr_booking_allowed BOOLEAN DEFAULT TRUE,
+    is_pos_connected BOOLEAN DEFAULT TRUE,
+    printing_enabled BOOLEAN DEFAULT FALSE,
+    trips_access BOOLEAN DEFAULT TRUE,
+    print_bus_number BOOLEAN DEFAULT TRUE,
+    access_password VARCHAR(255),
+    ticket_header VARCHAR(255),
+    ticket_footer VARCHAR(255) DEFAULT 'ApniBus वॉलेट में ₹250 तक जीतें, नीचे दिए नंबर पर कॉल करें',
+    subscription_pending BOOLEAN DEFAULT FALSE,
+    apply_concession BOOLEAN DEFAULT TRUE,
+    apply_bus_discount BOOLEAN DEFAULT FALSE,
+    apply_qr_discount BOOLEAN DEFAULT FALSE,
+    show_passenger_in_poc BOOLEAN DEFAULT TRUE,
+    online_app_booking_commission VARCHAR(255),
+    qr_booking_commission VARCHAR(255));
+CREATE TABLE "bus_historicalbus" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL, "id" char(32) NOT NULL, "bus_number" varchar(255) NOT NULL, "pos_serial_no" text NULL, "pos_dsn_number" varchar(255) NULL, "gps_sim_image" text NULL, "history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "operator_id" char(32) NULL,brand VARCHAR(255) NULL,category VARCHAR(255) DEFAULT 'GENERAL',
+    has_wifi BOOLEAN DEFAULT FALSE,
+    has_power_plug BOOLEAN DEFAULT FALSE,
+    is_sanitized BOOLEAN DEFAULT FALSE,
+    is_air_conditioned BOOLEAN DEFAULT FALSE,
+    operating_as VARCHAR(255),
+    driver_name VARCHAR(255),
+    driver_contact VARCHAR(20),
+    conductor_name VARCHAR(255),
+    conductor_contact VARCHAR(20),
+    seat_type VARCHAR(50) DEFAULT 'SEATER',
+    layout_type VARCHAR(255) DEFAULT 'LAYOUT_1',
+    is_multi_axle BOOLEAN DEFAULT FALSE,
+    normal_seats_capacity INTEGER DEFAULT 0,
+    single_sleeper_capacity INTEGER DEFAULT 0,
+    sharing_sleeper_capacity INTEGER DEFAULT 0,
+    upper_single_sleeper_capacity INTEGER DEFAULT 0,
+    upper_sharing_sleeper_capacity INTEGER DEFAULT 0,
+    recliner_capacity INTEGER DEFAULT 0,
+    status VARCHAR(255) DEFAULT 'ONBOARDED',
+    gps_status VARCHAR(255) DEFAULT 'NOT_INSTALLED',
+    commission DECIMAL(6, 2) DEFAULT 0,
+    digital_commission INTEGER,
+    cash_commission INTEGER,
+    is_booking_allowed BOOLEAN DEFAULT TRUE,
+    is_qr_booking_allowed BOOLEAN DEFAULT TRUE,
+    is_pos_connected BOOLEAN DEFAULT TRUE,
+    printing_enabled BOOLEAN DEFAULT FALSE,
+    trips_access BOOLEAN DEFAULT TRUE,
+    print_bus_number BOOLEAN DEFAULT TRUE,
+    access_password VARCHAR(255),
+    ticket_header VARCHAR(255),
+    ticket_footer VARCHAR(255) DEFAULT 'ApniBus वॉलेट में ₹250 तक जीतें, नीचे दिए नंबर पर कॉल करें',
+    subscription_pending BOOLEAN DEFAULT FALSE,
+    apply_concession BOOLEAN DEFAULT TRUE,
+    apply_bus_discount BOOLEAN DEFAULT FALSE,
+    apply_qr_discount BOOLEAN DEFAULT FALSE,
+    show_passenger_in_poc BOOLEAN DEFAULT TRUE,
+    online_app_booking_commission VARCHAR(255),
+    qr_booking_commission VARCHAR(255));
+
+DELETE FROM 'bus_historicaltownsearch';
+
+DELETE FROM 'route_historicalroute';
+
+DROP TABLE "task_task";
+
+CREATE TABLE "task_task" (
+"created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL,
+    "id" char(32) NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NULL,
+    description TEXT NULL,
+    priority VARCHAR(255) DEFAULT 'h',
+    task TEXT NULL,
+    status VARCHAR(255) DEFAULT 'i',
+    team_type VARCHAR(20) DEFAULT 's'
+);
+
+CREATE TABLE "task_historicaltask" ("created_on" datetime NOT NULL, "updated_on" datetime NOT NULL, "is_deleted" bool NOT NULL,"last_login" varchar(150) NULL, "is_superuser" bool NULL,"id" char(32) NULL,
+title VARCHAR(255) NULL,
+    description TEXT NULL,
+    priority VARCHAR(255) DEFAULT 'h',
+    task TEXT NULL,
+    status VARCHAR(255) DEFAULT 'i',
+    team_type VARCHAR(20) DEFAULT 's',
+"history_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "history_date" datetime NOT NULL, "history_change_reason" varchar(100) NULL, "history_type" varchar(1) NOT NULL, "history_user_id" char(32) NULL REFERENCES "account_user" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" char(32) NULL, "password" varchar(128) NULL)

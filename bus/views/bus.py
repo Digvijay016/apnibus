@@ -4,7 +4,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from account.models.operators import Operator
 from utils.restful_response import send_response
-
+import json
 from bus.models.bus import Bus
 from bus.serializers.bus import BusSerializer
 
@@ -46,6 +46,7 @@ class CreateBusView(viewsets.ModelViewSet):
                                  developer_message='Request failed due to invalid data.')
 
         serializer = self.get_serializer(data=request.data)
+        print(request.META)
         # data = ''
         if serializer.is_valid():
             instance = serializer.save()
@@ -54,7 +55,7 @@ class CreateBusView(viewsets.ModelViewSet):
             return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Bus created successfully.',
                                      data=data)
         # error = 'Serialization Failed'
-        return send_response(status=status.HTTP_200_OK, error_msg=serializer.errors ,developer_message='Request Failed.',
+        return send_response(status=status.HTTP_200_OK, error_msg=json.dumps(serializer.errors) ,developer_message='Request Failed.',
                                      data='')
 
     def get_queryset(self):

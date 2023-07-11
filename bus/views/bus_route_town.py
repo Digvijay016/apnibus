@@ -58,14 +58,14 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
             str(uid) for uid in missing_towns_qs.values_list('id',flat=True)
         ]
 
-        print("##########################",str(json_body['bus_route']))
+        print("########################## 1",str(json_body['bus_route']))
 
         for uid in missing_towns_uid:
             bus_route = BusRouteMissingTown.objects.filter(id=uid).values_list('bus_route',flat=True).first()
             missing_town_name = BusRouteMissingTown.objects.filter(id=uid).values_list('missing_town',flat=True).first()
             duration = BusRouteMissingTown.objects.filter(id=uid).values_list('duration',flat=True).first()
 
-            print("##########################",str(bus_route))
+            print("########################## 2",str(bus_route))
 
             if str(bus_route) == str(json_body['bus_route']):
                 missing_town_dct = {
@@ -79,7 +79,7 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
             
         json_body['towns'] = sorted(json_body['towns'], key=lambda x:x['duration'])
 
-        print("###############################################################")
+        print("############################################################### 3")
         print(json_body['towns'])
         print("###############################################################")
 
@@ -91,5 +91,7 @@ class CreateBusRouteTownView(viewsets.ModelViewSet):
 
         # Return a success response
         # return JsonResponse({'message': 'Bus route towns created successfully', 'data': data}, status=201)
-        return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Bus Route Town created successfully.',
+            return send_response(status=status.HTTP_200_OK, error_msg='' ,developer_message='Bus Route Town created successfully.',
                                      data=data)
+        return send_response(status=status.HTTP_200_OK, error_msg=serializer.errors ,developer_message='Request failed due to invalid data.',
+                                     data='')

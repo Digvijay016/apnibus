@@ -51,10 +51,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'account',
     # 'location',
     'route',
     'bus',
+    'task',
     # 'corsheaders',
     # 'booking',
     # 'payment',
@@ -156,3 +158,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+REST_FRAMEWORK = {
+        'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+        }
