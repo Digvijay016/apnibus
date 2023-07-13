@@ -6,7 +6,7 @@ from route.models.route_town_stoppage import RouteTownStoppage
 from simple_history.models import HistoricalRecords
 
 
-class BusRouteTownStoppage(TimeStampedModel):
+class BusRouteTownStoppage(models.Model):
     ACTIVE = 'active'
     INACTIVE = 'inactive'
     REQUEST_FOR_DELETION = 'request_for_deletion'
@@ -20,10 +20,12 @@ class BusRouteTownStoppage(TimeStampedModel):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
+    created_on = models.DateTimeField(auto_now_add=True, db_column='created_on')
+    updated_on = models.DateTimeField(auto_now=True, db_column='updated_on')
     bus_route_town = models.ForeignKey(
-        BusRouteTown, on_delete=models.CASCADE, blank=True, related_name='bus_route_town')
+        "bus.BusRouteTown", on_delete=models.CASCADE, blank=True, related_name='bus_route_town')
     route_town_stoppage = models.ForeignKey(
-        RouteTownStoppage, on_delete=models.CASCADE, blank=True)
+        "route.RouteTownStoppage", on_delete=models.CASCADE, blank=True)
     latitude = models.FloatField(blank=True)
     longitude = models.FloatField(blank=True)
     duration = models.IntegerField(blank=True)

@@ -24,7 +24,7 @@ class TownStoppage(TimeStampedModel):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
-    town = models.ForeignKey(Town, on_delete=models.CASCADE, blank=True)
+    town = models.ForeignKey("route.Town", on_delete=models.CASCADE, blank=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     latitude = models.FloatField(blank=True)

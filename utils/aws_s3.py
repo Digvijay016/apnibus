@@ -13,16 +13,12 @@ class UploadFiles:
         self.base_url = f"https://{self.AWS_BUCKET_NAME}.s3.{self.BUCKET_REGION_NAME}.amazonaws.com/"
 
     def upload_file(self, file_name, bucket_name, folder_name):
-        # print(folder_name, bucket_name, file_name,
-        #       self.base_url, settings.AWS_ACCESS_KEY, settings.AWS_SECRET_KEY)
         self.s3_conn.upload_file(
             file_name, bucket_name, f"{folder_name}/{file_name}")
-        # print(resp)
 
     def get_file_link(self, file_name, folder_name):
-        file_name = file_name.replace(" ", "T")  # .replace(":", "%3A")
+        file_name = file_name.replace(" ", "T")
         file_link = self.base_url + folder_name + "/" + file_name
-        # print("$$$$$$$$$$$$$$$$$$ ", file_name)
         return file_link
 
     def get_ec2_instance_ip(instance_id):

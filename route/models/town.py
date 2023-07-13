@@ -27,8 +27,8 @@ class Town(TimeStampedModel):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
     name = models.CharField(max_length=255)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    district = models.ForeignKey("route.District", on_delete=models.CASCADE)
+    city = models.ForeignKey("route.City", on_delete=models.SET_NULL, null=True)
     pincode = models.CharField(max_length=255, blank=True)
     short_name = models.CharField(max_length=255, blank=True)
     hindi_name = models.CharField(max_length=255, blank=True)

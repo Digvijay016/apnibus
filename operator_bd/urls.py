@@ -22,12 +22,13 @@ from rest_framework.routers import DefaultRouter
 # from django.conf.urls.static import static
 
 from account.views.operator import CreateOperatorView
-from account.views.sales_team import CreateSalesUser, UserAuthOTPViewset
+from account.views.sales_team import SalesTeamOTPViewset
 from bus.views.bus import CreateBusView
 from bus.views.bus_route import CreateBusRouteView
 # from bus.views.bus_route_return import BusRouteReturnView
 from bus.views.bus_route_town import CreateBusRouteTownView
 from bus.views.bus_routes_towns import CreateBusRoutesTownsView
+from task.views.task import CreateTaskView
 from pricing.views.price import CreatePriceView
 from route.views.district import CreateDistrictView
 from route.views.route import CreateRouteView
@@ -91,14 +92,15 @@ router.register(r'states', CreateStateView)
 router.register(r'town_stoppage', CreateTownStoppageView)
 router.register(r'route', CreateRouteView)
 router.register(r'route_town_generic', CreateBusRoutesTownsView)
-router.register(r'route_town', CreateBusRouteTownView)
+router.register(r'route_town', CreateRouteTownView)
 router.register(r'route_town_stoppage', CreateRouteTownStoppageView)
 router.register(r'route_return', CreateBusRouteTownView)
 router.register(r'missing_town', BusRouteMissingTownView)
 router.register(r'town_search', CreateTownView)
+router.register(r'task', CreateTaskView)
 # router.register(r'sales_team', CreateSalesUser)
-router.register(r'sales_team/otp', UserAuthOTPViewset)
-router.register(r'sales_team/resend/otp', UserAuthOTPViewset)
+router.register(r'sales_team/otp', SalesTeamOTPViewset)
+router.register(r'sales_team/resend/otp', SalesTeamOTPViewset)
 # router.register(r'sales_team/verify', UserAuthOTPViewset)
 # router.register(r'sales_team', CreateSalesUser, basename="create-sales-user")
 # router.register(r'routes', CreateRouteView)

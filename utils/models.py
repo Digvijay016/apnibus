@@ -22,9 +22,3 @@ class TimeStampedModel(models.Model):
         get_latest_by = 'updated_on'
         abstract = True
         default_permissions = ()
-
-
-# class AuditMixinModel(models.Model):
-#
-#     created_by = models.ForeignKey(User)
-#     updated_by = models.ForeignKey(User)

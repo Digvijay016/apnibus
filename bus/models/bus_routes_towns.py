@@ -12,7 +12,7 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 
-class BusRoutesTowns(TimeStampedModel):
+class BusRoutesTowns(models.Model):
     ACTIVE = 'active'
     INACTIVE = 'inactive'
     REQUEST_FOR_DELETION = 'request_for_deletion'
@@ -26,28 +26,26 @@ class BusRoutesTowns(TimeStampedModel):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
+    created_on = models.DateTimeField(auto_now_add=True, db_column='created_on')
+    updated_on = models.DateTimeField(auto_now=True, db_column='updated_on')
     route = models.ForeignKey(
-        Route, on_delete=models.CASCADE, blank=True)
-    duration = models.IntegerField(blank=True)
-    calculated_duration = models.IntegerField(blank=True)
+        "route.Route", on_delete=models.CASCADE, blank=True)
     towns = models.JSONField(default=list, blank=True)
     day = models.IntegerField(blank=True, default=0)
     town_status = models.CharField(
         max_length=20, choices=STATUS, default=ACTIVE)
     town_stoppage_status = models.CharField(
         max_length=20, choices=STATUS, default=ACTIVE)
-    eta_status = models.CharField(
-        max_length=20, choices=STATUS, default=ACTIVE)
     history = HistoricalRecords()
 
     def __str__(self):
         return str(self.id)
 
+
     @staticmethod
     @receiver(post_save, sender='bus.BusRoutesTowns')
     def post_save_callback(sender, instance,created, **kwargs):
         if created:
-            print("################ 1 ", instance.route)
             queryset = RouteTown.objects.filter(route=instance.route)
             uuid_town_id_list = [
                 str(uuid) for uuid in queryset.values_list('town', flat=True)]
@@ -55,25 +53,17 @@ class BusRoutesTowns(TimeStampedModel):
             route_town_ids_list = [
                 str(uuid) for uuid in queryset.values_list('id', flat=True)]
 
-            print("############## 2 ", route_town_ids_list)
-
             route_town_stoppage_list_qs = []
 
             for route_town_id in route_town_ids_list:
                 query_set = RouteTownStoppage.objects.filter(
                     route_town=route_town_id)
-                # print("########### 3 ", query_set)
                 if query_set:
                     qs = query_set.values_list(
                         'town_stoppage', flat=True).order_by('duration')
-                    route_town_stoppage_list_qs.append(qs)
+                    route_town_stoppage_list_qs.extend(qs)
 
-            print("########### 3 ", route_town_stoppage_list_qs)
-
-            route_town_stoppage_list = [
-                str(uuid) for uuid in route_town_stoppage_list_qs[0].values_list('town_stoppage', flat=True)]
-
-            print("############## 4 ", route_town_stoppage_list)
+            route_town_stoppage_list = [str(uuid) for uuid in route_town_stoppage_list_qs]
 
             town_stoppage_dict = {}
             town_stoppage_list = []
@@ -82,28 +72,31 @@ class BusRoutesTowns(TimeStampedModel):
                     id=stoppage_id).values_list('name', flat=True).first()
                 stoppage_town_id = TownStoppage.objects.filter(
                     id=stoppage_id).values_list('town', flat=True).first()
-
+                lattitude = TownStoppage.objects.filter(
+                    id=stoppage_id).values_list('latitude', flat=True).first()
+                longitude = TownStoppage.objects.filter(
+                    id=stoppage_id).values_list('longitude', flat=True).first()
+                duration = RouteTownStoppage.objects.filter(town_stoppage=stoppage_id).values_list(
+                        'duration', flat=True).first()
                 uuid_str = str(stoppage_town_id)
 
                 town_stoppage_dict = {
                     'stoppage_id': stoppage_id,
                     'stoppage_name': stoppage_name,
-                    'town_id': uuid_str
+                    'town_id': uuid_str,
+                    'lattitude': lattitude,
+                    'longitude': longitude,
+                    'duration' : duration
                 }
 
                 town_stoppage_list.append(town_stoppage_dict)
 
-                print('############## 6 ', town_stoppage_dict)
-
             town_stoppage_list.append(town_stoppage_dict)
-            print('############## 7 ', town_stoppage_list)
 
             for town_id in uuid_town_id_list:
                 if town_id:
                     name = Town.objects.filter(id=town_id).values_list(
                         'name', flat=True).first()
-
-                    duration = None
 
                     stoppage_list = []
 
@@ -112,15 +105,15 @@ class BusRoutesTowns(TimeStampedModel):
                             stoppage_dct = {
                                 "stoppage_id": stoppage.get("stoppage_id"),
                                 "stoppage_name": stoppage.get("stoppage_name"),
-                                "town_stoppage_status": instance.town_stoppage_status
+                                "town_stoppage_status": instance.town_stoppage_status,
+                                "lattitude" : stoppage.get("lattitude"),
+                                "longitude" : stoppage.get("longitude"),
+                                "duration" : stoppage.get("duration")
                             }
                             stoppage_list.append(stoppage_dct)
 
-                    if duration is None:
-                        duration = 0
-
                     town_dict = {"town_id": town_id,
-                                "town_name": name, "duration": duration, "town_status": instance.town_status, "stoppage": stoppage_list}  # , "via":via}
+                                "town_name": name, "town_status": instance.town_status, "stoppage": stoppage_list}  # , "via":via}
 
                     instance.towns.append(town_dict)
 
@@ -142,15 +135,9 @@ class BusRoutesTowns(TimeStampedModel):
                     'stoppage':[]
                 }
 
-                print("#########################",dct)
-
                 instance.towns.append(dct)   
             
             towns_lst = instance.towns
-            print("############################################################")
-            print(towns_lst)
-            print("############################################################")
-            towns_lst = sorted(towns_lst, key=lambda x: x['duration'])
-            instance.towns.append(towns_lst[0])
-            # instance.towns = sorted(instance.towns, key=lambda x: x['duration'])   
-            instance.save()      
+            towns_lst = sorted(towns_lst, key=lambda x: x['stoppage'][0]['duration'] if x['stoppage'] else float('inf'))
+            instance.towns.append(towns_lst[0])  
+            instance.save()  

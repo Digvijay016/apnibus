@@ -14,3 +14,4 @@ def send_otp(user_obj, mobile_number, otp):
     apnibus_logger.info(message)
     resp = SMSService(mobile=mobile_number, message=message).send_sms(unicode=0)
     apnibus_logger.info(resp)
+    return resp

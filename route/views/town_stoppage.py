@@ -13,6 +13,5 @@ class CreateTownStoppageView(viewsets.ModelViewSet):
     queryset = TownStoppage.objects.all()
     serializer_class = TownStoppageSerializer
 
-    # serializer_class = TownStoppageSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
