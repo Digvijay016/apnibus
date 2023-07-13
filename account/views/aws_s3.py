@@ -16,6 +16,8 @@ class UploadAssetsToS3View(generics.CreateAPIView):
         time_now = datetime.now()
         img_file = str(image_name)
 
+        img_file = img_file.replace(' ','_')
+
         file_extension = img_file.split(".")[-1]
         file_name = img_file.replace(
             f".{file_extension}", '') + str(time_now) + f".{file_extension}"

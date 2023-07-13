@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Operator, UserAuthenticationOTP, User
-
+from .models import Operator
 
 class OperatorAdmin(admin.ModelAdmin):
     model = Operator
@@ -9,5 +8,3 @@ class OperatorAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Operator, OperatorAdmin)
-admin.site.register(UserAuthenticationOTP)
-admin.site.register(User)

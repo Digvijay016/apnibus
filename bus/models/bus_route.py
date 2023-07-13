@@ -10,17 +10,19 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 
-class BusRoute(TimeStampedModel):
+class BusRoute(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
-    from_town = models.ForeignKey(Town, on_delete=models.CASCADE, blank=True, related_name='bus_route_from_town_FK')
-    to_town = models.ForeignKey(Town, on_delete=models.CASCADE, blank=True, related_name='bus_route_to_town_FK')
+    created_on = models.DateTimeField(auto_now_add=True, db_column='created_on')
+    updated_on = models.DateTimeField(auto_now=True, db_column='updated_on')
+    from_town = models.ForeignKey("route.Town", on_delete=models.CASCADE, blank=True, related_name='bus_route_from_town_FK')
+    to_town = models.ForeignKey("route.Town", on_delete=models.CASCADE, blank=True, related_name='bus_route_to_town_FK')
     start_time = models.TimeField(default='00:00:00')
     arrival_time = models.TimeField(default='00:00:00')
     routes = models.JSONField(default=list, blank=True)
     towns = models.JSONField(default=list, blank=True)
-    route_selected = models.ForeignKey(Route, on_delete=models.CASCADE, null=True ,blank=True)
-    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, blank=True)
+    route_selected = models.ForeignKey("route.Route", on_delete=models.CASCADE, null=True ,blank=True)
+    bus = models.ForeignKey("bus.Bus", on_delete=models.CASCADE, blank=True)
     return_id = models.CharField(max_length=255, default='', blank=True)
     history = HistoricalRecords()
 
@@ -39,20 +41,30 @@ class BusRoute(TimeStampedModel):
                 for route in qs_routes:
                     if route:
                         for r in route:
-                            r['route_name'] = ' '.join(r['route_name'].split(' ')[::-1])
+                            r['route_name'] = '-'.join(r['route_name'].split('-')[::-1])
                     instance.routes = route
 
                 from bus.models.bus_route_town import BusRouteTown
                 queryset = BusRoute.objects.filter(id=instance.return_id)
                 towns = queryset.values_list('towns',flat=True)
+
+                durations_list = []
+
                 if towns:
                     towns_lst = list(towns)[0]
                     length = len(towns_lst)-1
                     towns_lst = towns_lst[::-1]
+
                     for i in range(0,length):
-                        temp = towns_lst[i]['duration']
-                        towns_lst[i]['duration'] = towns_lst[length-i-1]['duration']
-                        towns_lst[length-i-1]['duration'] = temp
+                        if towns_lst[i]['stoppage']:
+                            durations_list.append(towns_lst[i]['stoppage'][0]['duration'])
+
+                    durations_list = durations_list[::-1]
+                    ind = 0
+                    for i in range(0,length):
+                        if towns_lst[i]['stoppage']:
+                            towns_lst[i]['stoppage'][0]['duration'] = durations_list[ind]
+                            ind += 1
                     instance.towns = towns_lst
 
                 route_selected = BusRoute.objects.filter(id=instance.return_id).values_list('route_selected',flat=True).first()
@@ -96,7 +108,7 @@ class BusRoute(TimeStampedModel):
                 towns = qs.values_list('towns',flat=True)
                 if towns:
                     towns_lst = list(towns)[0]
-                    towns_lst = sorted(towns_lst, key=lambda x:x['duration'])
+                    towns_lst = sorted(towns_lst, key=lambda x: x['stoppage'][0]['duration'] if x['stoppage'] else float('inf'))
                     instance.towns.append(towns_lst)
                     instance.towns = instance.towns[0]
             instance.save()

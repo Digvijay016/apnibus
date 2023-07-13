@@ -29,7 +29,8 @@ ENVIRONMENT = 'local'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'account.SalesTeamUser'
+#ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 TIME_ZONE =  'Asia/Kolkata'
 
 # AWS Credentials
@@ -73,6 +74,11 @@ INSTALLED_APPS = [
     # 'referral'
 ]
 
+# SILENCED_SYSTEM_CHECKS = [
+#     # Other silenced system checks...
+#     'auth.E003',  # Add this line to silence the 'auth.E003' check for 'account.SalesTeamUser.username' uniqueness.
+# ]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -109,8 +115,14 @@ WSGI_APPLICATION = 'operator_bd.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'dummy_3.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': 'dummy.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'apnibus_bd',
+        'USER': 'apnibus_db_admin',
+        'PASSWORD': '42follow94132397overmajorcertainrope',
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 

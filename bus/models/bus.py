@@ -11,7 +11,7 @@ from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-class Bus(TimeStampedModel):
+class Bus(models.Model):
 
     SEATER = 'se'
     SLEEPER = 'sl'
@@ -101,8 +101,10 @@ class Bus(TimeStampedModel):
 
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
+    created_on = models.DateTimeField(auto_now_add=True, db_column='created_on')
+    updated_on = models.DateTimeField(auto_now=True, db_column='updated_on')
     operator = models.ForeignKey(
-        Operator, on_delete=models.CASCADE, blank=True)
+        "account.Operator", on_delete=models.CASCADE, blank=True)
     category = models.CharField(max_length=255, choices=BUS_CATEGORY, default=GENERAL)
     brand = models.CharField(max_length=255, null=True)
     has_wifi = models.BooleanField(default=False)

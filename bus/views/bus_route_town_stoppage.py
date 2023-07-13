@@ -5,7 +5,6 @@ from route.models.route_town_stoppage import RouteTownStoppage
 from utils.restful_response import send_response
 from utils.exception_handler import get_object_or_json404
 from bus.serializers.bus_route_town_stoppage import BusRouteTownStoppageSerializer
-# from bus.helpers.bus_route_town_stoppage import BusRouteTownStoppageUtils
 from utils.date_time_utils import get_time_from_duration
 from utils.apnibus_logger import apnibus_logger
 from rest_framework.authentication import TokenAuthentication

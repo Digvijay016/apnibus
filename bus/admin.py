@@ -3,7 +3,7 @@ from bus.models.bus import Bus
 from bus.models.bus_route import BusRoute
 from bus.models.bus_route_town import BusRouteTown
 
-
+"""
 class BusAdmin(admin.ModelAdmin):
     model = Bus
     list_display = ('bus_number', 'get_operator', 'pos_serial_no',
@@ -18,7 +18,7 @@ class BusAdmin(admin.ModelAdmin):
                   'subscription_pending','apply_concession','apply_bus_discount','apply_qr_discount',
                   'show_passenger_in_poc','online_app_booking_commission','qr_booking_commission')
     
-    search_fields = ['bus_number','get_operator','is_sanitized','is_air_conditioned','operating_as']
+    search_fields = ['bus_number','operator__name','is_sanitized','is_air_conditioned','operating_as']
 
     @admin.display(description='Operator')
     def get_operator(self, obj):
@@ -37,3 +37,4 @@ class BusRouteTownAdmin(admin.ModelAdmin):
     list_display = ('days','towns')
 
 admin.site.register(BusRouteTown, BusRouteTownAdmin)
+"""

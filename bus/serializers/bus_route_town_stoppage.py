@@ -1,33 +1,15 @@
 from utils.serializers import DynamicFieldsModelSerializer
 from bus.models.bus_route_town_stoppage import BusRouteTownStoppage
 from rest_framework import serializers
-from account.models.user import User
 
 
 class BusRouteTownStoppageSerializer(DynamicFieldsModelSerializer):
-    # from .bus_route_town import BusRouteTownSerializer
-    # from route.serializers.route_town_stoppage import RouteTownStoppageSerializer
-
-    # bus_route_town = BusRouteTownSerializer(required=False)
-    # route_town_stoppage = RouteTownStoppageSerializer(required=False)
 
     class Meta:
         model = BusRouteTownStoppage
         fields = (
             'id', 'bus_route_town', 'route_town_stoppage', 'latitude', 'longitude', 'duration', 'start_time',
             'is_active', 'status', 'eta_status')
-
-
-# class BusRouteTownStoppageResponseSerializer(DynamicFieldsModelSerializer):
-#     from route.serializers.route_town_stoppage import RouteTownStoppageSerializer
-
-#     route_town_stoppage = RouteTownStoppageSerializer(required=False)
-
-#     class Meta:
-#         model = BusRouteTownStoppage
-#         fields = (
-#             'id', 'route_town_stoppage', 'latitude', 'longitude', 'duration', 'is_active', 'status', 'eta_status')
-
 
 class BusRouteTownStoppageResponseSerializer(DynamicFieldsModelSerializer):
     stoppage_name = serializers.SerializerMethodField()

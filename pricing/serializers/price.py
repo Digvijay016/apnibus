@@ -4,8 +4,6 @@ from pricing.models.price import PriceMatrix
 
 
 class PriceSerializer(DynamicFieldsModelSerializer):
-    # operator = OperatorSerializer(required=False)
-    # remarks = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = PriceMatrix

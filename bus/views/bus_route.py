@@ -16,10 +16,8 @@ class CreateBusRouteView(viewsets.ModelViewSet):
     queryset = BusRoute.objects.all()
     serializer_class = BusRouteSerializer
 
-    # route_serializer = RouteSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    # lookup_field = 'bus'
 
     def create(self, request, *args, **kwargs):
         bus = request.data.get('bus',None)
@@ -70,18 +68,7 @@ class CreateBusRouteView(viewsets.ModelViewSet):
     def get_queryset(self):
         bus_id = self.request.query_params.get('bus')
         if bus_id:
-            print("#######################",bus_id)
             query_set = BusRoute.objects.filter(bus=bus_id)
-            print("#######################",query_set)
             return query_set
         else:
             return self.queryset
-
-    # def list(self, request, *args, **kwargs):
-    #     bus_id = request.query_params#.get('bus')
-    #     print("####################",self.lookup_field,bus_id)
-    #     queryset = self.queryset.filter(bus=bus_id)
-    #     queryset.filter(bus=bus_id)
-    #     queryset = self.filter_queryset(self.queryset)
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)

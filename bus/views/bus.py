@@ -13,8 +13,6 @@ class CreateBusView(viewsets.ModelViewSet):
     """
     working: Used for adding a bus.
     """
-
-    # serializer_class = BusSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Bus.objects.all()
@@ -46,24 +44,21 @@ class CreateBusView(viewsets.ModelViewSet):
                                  developer_message='Request failed due to invalid data.')
 
         serializer = self.get_serializer(data=request.data)
-        print(request.META)
-        # data = ''
+
         if serializer.is_valid():
             instance = serializer.save()
             data = self.get_serializer(instance).data
 
-            return send_response(status=status.HTTP_200_OK, error_msg=error ,developer_message='Bus created successfully.',
+            return send_response(status=status.HTTP_200_OK, error_msg='' ,developer_message='Bus created successfully.',
                                      data=data)
-        # error = 'Serialization Failed'
-        return send_response(status=status.HTTP_200_OK, error_msg=json.dumps(serializer.errors) ,developer_message='Request Failed.',
+
+        return send_response(status=status.HTTP_200_OK, error_msg=serializer.errors ,developer_message='Request Failed.',
                                      data='')
 
     def get_queryset(self):
         operator_id = self.request.query_params.get('operator')
         if operator_id:
-            print("#######################",operator_id)
             query_set = Bus.objects.filter(operator=operator_id)
-            print("#######################",query_set)
             return query_set
         else:
             return self.queryset
